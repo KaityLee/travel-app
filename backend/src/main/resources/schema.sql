@@ -6,7 +6,7 @@
 --     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 -- );
 
-CREATE TABLE trips (
+CREATE TABLE trip (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     -- user_id BIGINT NOT NULL,
     trip_name VARCHAR(255) NOT NULL,
@@ -18,7 +18,22 @@ CREATE TABLE trips (
     -- FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
-CREATE TABLE calendar_events (
+CREATE TABLE task (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    -- user_id BIGINT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    due_date DATETIME,
+    status ENUM('pending', 'completed', 'in-progress') DEFAULT 'pending',
+    priority ENUM('low', 'medium', 'high') DEFAULT 'medium',
+    travel_related BOOLEAN DEFAULT FALSE,
+    trip_id BIGINT NULL,  -- Optional link to a trip
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    -- FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (trip_id) REFERENCES trips(id) ON DELETE SET NULL
+);
+
+CREATE TABLE calendar_event (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     -- user_id BIGINT NOT NULL,
     title VARCHAR(255) NOT NULL,
@@ -46,7 +61,7 @@ CREATE TABLE itinerary (
     FOREIGN KEY (trip_id) REFERENCES trips(id) ON DELETE CASCADE
 );
 
-CREATE TABLE locations (
+CREATE TABLE location (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     trip_id BIGINT NOT NULL,
     name VARCHAR(255) NOT NULL,

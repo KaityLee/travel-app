@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaity.travel.backend.domain.todo.mapper.TripMapper">
+
+    <select id="getAllTrips" resultType="com.kaity.travel.backend.domain.todo.entity.Trip">
+        SELECT *
+        FROM trip
+        ORDER BY start_date ASC
+    </select>
+
+    <select id="getTripById" parameterType="long" resultType="com.kaity.travel.backend.domain.todo.entity.Trip">
+        SELECT * 
+        FROM trip
+        WHERE id = #{id}
+    </select>
+
+    <insert id="createTrip" parameterType="com.kaity.travel.backend.domain.todo.entity.Trip" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO trip (
+             trip_name
+            ,destination
+            ,start_date
+            ,end_date
+            ,notes
+            ,created_at
+        )
+        VALUES (
+             #{tripName}
+            ,#{destination}
+            ,#{startDate}
+            ,#{endDate}
+            ,#{notes}
+            ,#{createdAt}
+        )
+    </insert>
+
+    <update id="updateTrip" parameterType="com.kaity.travel.backend.domain.todo.entity.Trip">
+        UPDATE trip 
+        SET    trip_name      =    #{tripName}
+              ,destination    =    #{destination}
+              ,start_date     =    #{startDate}
+              ,end_date       =    #{endDate}
+              ,notes          =    #{notes}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteTrip" parameterType="long">
+        DELETE FROM trip WHERE id = #{id}
+    </delete>
+
+</mapper>

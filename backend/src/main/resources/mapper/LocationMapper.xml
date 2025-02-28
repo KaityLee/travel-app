@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaity.travel.backend.domain.todo.mapper.LocationMapper">
+
+    <select id="getLocationsByTrip" parameterType="long" resultType="com.kaity.travel.backend.domain.todo.entity.Location">
+        SELECT * 
+        FROM location
+        WHERE trip_id = #{tripId}
+    </select>
+
+    <insert id="createLocation" parameterType="com.kaity.travel.backend.domain.todo.entity.Location" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO location (
+             trip_id
+            ,name
+            ,address
+            ,latitude
+            ,longitude
+            ,notes
+        )
+        VALUES (
+             #{tripId}
+            ,#{name}
+            ,#{address}
+            ,#{latitude}
+            ,#{longitude}
+            ,#{notes}
+        )
+    </insert>
+
+    <update id="updateLocation" parameterType="com.kaity.travel.backend.domain.todo.entity.Location">
+        UPDATE location 
+        SET    name       =    #{name}
+              ,address    =    #{address}
+              ,latitude   =    #{latitude}
+              ,longitude  =    #{longitude}
+              ,notes      =    #{notes}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteLocation" parameterType="long">
+        DELETE FROM location WHERE id = #{id}
+    </delete>
+
+</mapper>
