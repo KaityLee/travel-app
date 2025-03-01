@@ -30,7 +30,7 @@ CREATE TABLE task (
     trip_id BIGINT NULL,  -- Optional link to a trip
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     -- FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (trip_id) REFERENCES trips(id) ON DELETE SET NULL
+    FOREIGN KEY (trip_id) REFERENCES trip(id) ON DELETE SET NULL
 );
 
 CREATE TABLE calendar_event (
@@ -45,7 +45,7 @@ CREATE TABLE calendar_event (
     trip_id BIGINT NULL,  -- Optional link to a trip
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     -- FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (trip_id) REFERENCES trips(id) ON DELETE SET NULL
+    FOREIGN KEY (trip_id) REFERENCES trip(id) ON DELETE SET NULL
 );
 
 
@@ -58,7 +58,7 @@ CREATE TABLE itinerary (
     time_slot TIME NULL,
     location VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (trip_id) REFERENCES trips(id) ON DELETE CASCADE
+    FOREIGN KEY (trip_id) REFERENCES trip(id) ON DELETE CASCADE
 );
 
 CREATE TABLE location (
@@ -70,5 +70,5 @@ CREATE TABLE location (
     longitude DECIMAL(9,6),
     notes TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (trip_id) REFERENCES trips(id) ON DELETE CASCADE
+    FOREIGN KEY (trip_id) REFERENCES trip(id) ON DELETE CASCADE
 );
