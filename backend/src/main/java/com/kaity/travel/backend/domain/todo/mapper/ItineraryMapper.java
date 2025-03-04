@@ -10,7 +10,7 @@ import com.kaity.travel.backend.domain.todo.entity.Itinerary;
 public interface ItineraryMapper {
     
     // List<Itinerary> getAllItinerary();
-    Itinerary getItineraryByTrip(Long tripId);
+    List<Itinerary> getItineraryByTrip(Long tripId);
     void createItinerary(Itinerary itinerary);
     void updateItinerary(Itinerary itinerary);
     void deleteItinerary(Long id);

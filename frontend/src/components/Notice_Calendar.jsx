@@ -1,81 +1,100 @@
 import React, { useEffect, useState } from "react";
-import { Calendar, Select, Row, Col, notification, Badge } from "antd";
-import axios from "axios";
+import { Calendar, Select, Row, Col, Badge } from "antd";
+import CurrencySelector from "./CurrencySelector"; 
 import useTrips from "../hooks/useTrips"; 
 import useTasks from "../hooks/useTasks";
-
-const fetchCurrencyRate = async () => {
-  try {
-    const response = await axios.get(
-      "https://m.search.naver.com/p/csearch/content/qapirender.nhn?key=calculator&pkid=141&q=%ED%99%98%EC%9C%A8&where=m&u1=keb&u6=standardUnit&u7=0&u3=JPY&u4=KRW&u8=down&u2=1"
-    );
-    const currencyData = response.data.country;
-    const krwRate = currencyData.find((item) => item.currencyUnit === "원")?.value || "N/A";
-
-    return parseFloat(krwRate).toFixed(2);
-  } catch (error) {
-    console.error("Error fetching currency rate:", error);
-    return "N/A";
-  }
-};
+import useItineraries from "../hooks/useItineraries";
 
 const NoticeCalendar = () => {
   const { trips } = useTrips();
   const { tasks } = useTasks();
-  const [currencyRate, setCurrencyRate] = useState("Loading...");
-  const [previousRate, setPreviousRate] = useState(null);
-  const [isUpdated, setIsUpdated] = useState(false);
+  const { fetchItineraries } = useItineraries();
+  const [itineraries, setItineraries] = useState([]);
 
   useEffect(() => {
-    const updateRate = async () => {
-      const newRate = await fetchCurrencyRate();
-
-      if (previousRate && newRate !== previousRate) {
-        notification.success({
-          message: "Currency Rate Updated",
-          description: `New JPY → KRW Rate: ${newRate}`,
-          duration: 3,
-        });
-
-        setIsUpdated(true);
-        setTimeout(() => setIsUpdated(false), 3000);
+    const loadItineraries = async () => {
+      try {
+        const allItineraries = await Promise.all(trips.map((trip) => fetchItineraries(trip.id)));
+        setItineraries(allItineraries.flat());
+      } catch (error) {
+        console.error("Error fetching itineraries:", error);
       }
-
-      setPreviousRate(newRate);
-      setCurrencyRate(newRate);
     };
 
-    updateRate();
-    const interval = setInterval(updateRate, 60000);
+    if (trips.length > 0) {
+      loadItineraries();
+    }
+  }, [trips]);
 
-    return () => clearInterval(interval);
-  }, [previousRate]);
+  const safeTrips = Array.isArray(trips) ? trips : [];
+  const safeTasks = Array.isArray(tasks) ? tasks : [];
+  const safeItineraries = Array.isArray(itineraries) ? itineraries : [];
 
-  // 📌 Highlight travel schedules on calendar
-  const dateCellRender = (value) => {
-    const dateString = value.format("YYYY-MM-DD");
-    const travelEvents = trips.filter(
-      (trip) => dateString >= trip.start_date && dateString <= trip.end_date
+  // ✅ Function to calculate full itinerary date
+  const getFullItineraryDate = (itinerary) => {
+    const trip = safeTrips.find((trip) => trip.id === itinerary.tripId);
+    if (!trip) return null;
+
+    const tripStartDate = new Date(trip.startDate); // Convert to Date object
+    const itineraryDate = new Date(tripStartDate);
+    itineraryDate.setDate(tripStartDate.getDate() + (itinerary.dayNumber - 1)); // ✅ Add dayNumber
+
+    return itineraryDate.toISOString().split("T")[0]; // Return YYYY-MM-DD format
+  };
+
+  const cellRender = (current, info) => {
+    if (info.type !== "date") return info.originNode;
+
+    const dateString = current.format("YYYY-MM-DD");
+
+    const travelEvents = safeTrips.filter(
+      (trip) => dateString >= trip.startDate && dateString <= trip.endDate
     );
-    const taskEvents = tasks.filter((task) => task.due_date.startsWith(dateString));
 
+    const taskEvents = safeTasks.filter(
+      (task) => task.due_date?.slice(0, 10) === dateString
+    );
+
+    const itineraryEvents = safeItineraries.filter(
+      (itinerary) => getFullItineraryDate(itinerary) === dateString
+    );
+    const hasTravel = travelEvents.length > 0;
+    const hasTasks = taskEvents.length > 0;
+    const hasItinerary = itineraryEvents.length > 0;
+  
+    let backgroundColor = "white"; // Default
+    if (hasTravel) backgroundColor = "#e0f7fa"; // Light blue for trips
+    if (hasTasks) backgroundColor = "#ffebee"; // Light red for tasks
+    if (hasItinerary) backgroundColor = "#ede7f6"; // Light purple for itineraries
+  
     return (
-      <ul className="events">
-        {travelEvents.map((trip, index) => (
-          <li key={`trip-${index}`}>
-            <Badge color="blue" text={`Trip: ${trip.trip_name}`} />
-          </li>
-        ))}
-        {taskEvents.map((task, index) => (
-          <li key={`task-${index}`}>
-            <Badge color={task.status === "completed" ? "green" : "red"} text={`Task: ${task.title}`} />
-          </li>
-        ))}
-      </ul>
+      <div
+        style={{
+          backgroundColor, // ✅ Apply row background color
+          borderRadius: "5px",
+        }}
+      >
+        <div className="custom-cell-content">
+          {travelEvents.map((trip, index) => (
+            <p key={`trip-${index}`} style={{ fontWeight: "bold" }}>
+              ✈️ {trip.tripName}
+            </p>
+          ))}
+          {taskEvents.map((task, index) => (
+            <p key={`task-${index}`} style={{ fontWeight: "bold" }}>
+              📌 {task.title} ({task.status})
+            </p>
+          ))}
+          {itineraryEvents.map((itinerary, index) => (
+            <p key={`itinerary-${index}`}>
+              📍 Day {itinerary.dayNumber}: {itinerary.title} ({itinerary.timeSlot})
+            </p>
+          ))}
+        </div>
+      </div>
     );
   };
 
-  // 📌 Custom header with year/month selector & currency rate
   const customHeader = ({ value, onChange }) => {
     const year = value.year();
     const month = value.month();
@@ -89,10 +108,7 @@ const NoticeCalendar = () => {
         <Col style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <Select
             value={year}
-            onChange={(newYear) => {
-              const newValue = value.clone().year(newYear);
-              onChange(newValue);
-            }}
+            onChange={(newYear) => onChange(value.clone().year(newYear))}
             style={{ width: 100 }}
           >
             {Array.from({ length: 10 }, (_, i) => year - 5 + i).map((y) => (
@@ -104,10 +120,7 @@ const NoticeCalendar = () => {
 
           <Select
             value={month}
-            onChange={(newMonth) => {
-              const newValue = value.clone().month(newMonth);
-              onChange(newValue);
-            }}
+            onChange={(newMonth) => onChange(value.clone().month(newMonth))}
             style={{ width: 100 }}
           >
             {Array.from({ length: 12 }, (_, i) => (
@@ -117,22 +130,13 @@ const NoticeCalendar = () => {
             ))}
           </Select>
 
-          <span
-            style={{
-              fontSize: "16px",
-              fontWeight: "bold",
-              transition: "color 0.5s ease",
-              color: isUpdated ? "red" : "#1890ff",
-            }}
-          >
-            JPY → KRW: {currencyRate}
-          </span>
+          <CurrencySelector />
         </Col>
       </Row>
     );
   };
 
-  return <Calendar headerRender={customHeader} cellRender={dateCellRender} />;
+  return <Calendar headerRender={customHeader} cellRender={cellRender} />;
 };
 
 export default NoticeCalendar;

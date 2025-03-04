@@ -3,13 +3,29 @@
 <mapper namespace="com.kaity.travel.backend.domain.todo.mapper.TaskMapper">
 
     <select id="getAllTasks" resultType="com.kaity.travel.backend.domain.todo.entity.Task">
-        SELECT *
+        SELECT   id
+                ,title
+                ,description
+                ,dueDate
+                ,status
+                ,priority
+                ,travelRelated
+                ,tripId
+                ,createdAt
         FROM task
-        ORDER BY due_date ASC
+        ORDER BY dueDate ASC
     </select>
 
     <select id="getTaskById" parameterType="long" resultType="com.kaity.travel.backend.domain.todo.entity.Task">
-        SELECT * 
+        SELECT   id
+                ,title
+                ,description
+                ,dueDate
+                ,status
+                ,priority
+                ,travelRelated
+                ,tripId
+                ,createdAt 
         FROM task
         WHERE id = #{id}
     </select>
@@ -18,12 +34,11 @@
         INSERT INTO task (
              title
             ,description
-            ,due_date
+            ,dueDate
             ,status
             ,priority
-            ,travel_related
-            ,trip_id
-            ,created_at
+            ,travelRelated
+            ,tripId
         )
         VALUES (
             #{title}
@@ -33,7 +48,6 @@
             ,#{priority}
             ,#{travelRelated}
             ,#{tripId}
-            ,#{createdAt}
         )
     </insert>
 
@@ -41,11 +55,11 @@
         UPDATE task 
         SET    title       =    #{title}
               ,description =    #{description}
-              ,due_date    =    #{dueDate}
+              ,dueDate     =    #{dueDate}
               ,status      =    #{status}
               ,priority    =    #{priority}
-              ,travel_related = #{travelRelated}
-              ,trip_id     =    #{tripId}
+              ,travelRelated = #{travelRelated}
+              ,tripId      =    #{tripId}
         WHERE id = #{id}
     </update>
 

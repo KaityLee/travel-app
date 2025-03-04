@@ -1,5 +1,7 @@
 package com.kaity.travel.backend.domain.todo.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.kaity.travel.backend.domain.todo.entity.Itinerary;
@@ -16,7 +18,7 @@ public class ItineraryServiceImpl implements ItineraryService{
     }
     
     @Override
-    public Itinerary getItineraryByTrip(Long tripId) {
+    public List<Itinerary> getItineraryByTrip(Long tripId) {
         return itineraryMapper.getItineraryByTrip(tripId);
     }
 

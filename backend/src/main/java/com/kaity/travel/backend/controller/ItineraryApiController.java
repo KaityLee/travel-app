@@ -19,10 +19,11 @@ public class ItineraryApiController {
         this.itineraryService = itineraryService;
     }
     
-    @GetMapping("/{id}")
+    
+    @GetMapping("/{tripId}")
     public Map<String,Object> getItineraryByTrip(@PathVariable Long tripId) {
         try {
-            var results = itineraryService.getItineraryByTrip(tripId);
+            List<Itinerary> results = itineraryService.getItineraryByTrip(tripId);
             return ApiResponseUtils.createResponse(results); 
         } catch (Exception e) {
             return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage()); 
@@ -48,8 +49,8 @@ public class ItineraryApiController {
         }
     }
 
-    @DeleteMapping
-    public Map<String,Object> deleteItinerary(@RequestBody Long id) {
+    @DeleteMapping("/{id}")
+    public Map<String,Object> deleteItinerary(@PathVariable Long id) {
         try {
             itineraryService.deleteItinerary(id);
             return ApiResponseUtils.createResponse("삭제완료"); 

@@ -2,42 +2,49 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import API_BASE_URL from "../config";
 
-const useItineraries = (tripId = null) => {
-  const [itinerary, setItineraries] = useState([]);
+const useItineraries = (tripId) => {
+  const [itineraries, setItineraries] = useState([]);
 
   useEffect(() => {
-    fetchItineraries();
+    if (tripId) {
+      fetchItineraries(tripId);
+    } else {
+      setItineraries([]); 
+    }
   }, [tripId]);
 
-  const fetchItineraries = async () => {
+  const fetchItineraries = async (tripId) => {
     try {
-      const endpoint = tripId ? `${API_BASE_URL}/itinerary?trip_id=${tripId}` : `${API_BASE_URL}/itinerary`;
-      const response = await axios.get(endpoint);
-      setItineraries(response.data);
+      const response = await axios.get(`${API_BASE_URL}/itinerary/${tripId}`);
+      return response.data.data.result;
+      // setItineraries(Array.isArray(response.data.data.result) ? response.data.data.result : []);
     } catch (error) {
-      console.error("Error fetching itinerary:", error);
+      console.error("Error fetching itineraries:", error);
+      // setItineraries([]);
+      return [];
     }
   };
 
   const addItinerary = async (newItinerary) => {
     try {
-      await axios.post(`${API_BASE_URL}/itinerary`, { ...newItinerary, trip_id: tripId });
-      fetchItineraries();
+      await axios.post(`${API_BASE_URL}/itinerary`, newItinerary);
+      return fetchItineraries(newItinerary.tripId);
     } catch (error) {
       console.error("Error adding itinerary:", error);
     }
   };
 
-  const deleteItinerary = async (id) => {
+  const deleteItinerary = async (id, tripId) => {
+    if (!tripId) return;
     try {
       await axios.delete(`${API_BASE_URL}/itinerary/${id}`);
-      fetchItineraries();
+      return fetchItineraries(tripId);
     } catch (error) {
       console.error("Error deleting itinerary:", error);
     }
   };
 
-  return { itinerary, addItinerary, deleteItinerary };
+  return { itineraries, fetchItineraries, addItinerary, deleteItinerary };
 };
 
 export default useItineraries;

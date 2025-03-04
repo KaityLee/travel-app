@@ -24,8 +24,10 @@ Content-Type: image/tiff
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
 ### 일정
-GET http://localhost:8081/api/task
+GET http://localhost:8081/api/trip
 
+### 일정
+GET http://localhost:8081/api/itinerary/1
 
 
 ### 외부 API

@@ -3,14 +3,21 @@
 <mapper namespace="com.kaity.travel.backend.domain.todo.mapper.LocationMapper">
 
     <select id="getLocationsByTrip" parameterType="long" resultType="com.kaity.travel.backend.domain.todo.entity.Location">
-        SELECT * 
+        SELECT   id
+                ,tripId
+                ,name
+                ,address
+                ,latitude
+                ,longitude
+                ,notes
+                ,createdAt 
         FROM location
-        WHERE trip_id = #{tripId}
+        WHERE tripId = #{tripId}
     </select>
 
     <insert id="createLocation" parameterType="com.kaity.travel.backend.domain.todo.entity.Location" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO location (
-             trip_id
+             tripId
             ,name
             ,address
             ,latitude

@@ -15,6 +15,9 @@ public class Itinerary {
     private String title;
     private String description;
     private LocalTime timeSlot;
-    private String location;
+    private String location; 
+    private String address;
+    private Double latitude; 
+    private Double longitude;
     private LocalDateTime createdAt;
 }

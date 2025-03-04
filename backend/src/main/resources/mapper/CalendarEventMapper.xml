@@ -3,7 +3,15 @@
 <mapper namespace="com.kaity.travel.backend.domain.todo.mapper.CalendarEventMapper">
 
     <select id="getAllEvents" resultType="com.kaity.travel.backend.domain.todo.entity.CalendarEvent">
-        SELECT * 
+        SELECT   id
+                ,title
+                ,description
+                ,startTime
+                ,endTime
+                ,location
+                ,travelRelated
+                ,tripId
+                ,createdAt 
         FROM calendar_event
         ORDER BY start_time ASC
     </select>
@@ -18,12 +26,12 @@
         INSERT INTO calendar_event (
              title
             ,description
-            ,start_time
-            ,end_time
+            ,startTime
+            ,endTime
             ,location
-            ,travel_related
-            ,trip_id
-            ,created_at
+            ,travelRelated
+            ,tripId
+            ,createdAt
         )
         VALUES (
              #{title}
@@ -41,11 +49,11 @@
         UPDATE calendar_event 
         SET    title          =    #{title}
               ,description    =    #{description}
-              ,start_time     =    #{startTime}
-              ,end_time       =    #{endTime}
+              ,startTime     =    #{startTime}
+              ,endTime       =    #{endTime}
               ,location       =    #{location}
-              ,travel_related =    #{travelRelated}
-              ,trip_id        =    #{tripId}
+              ,travelRelated =    #{travelRelated}
+              ,tripId        =    #{tripId}
         WHERE id = #{id}
     </update>
 

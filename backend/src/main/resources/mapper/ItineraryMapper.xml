@@ -3,19 +3,26 @@
 <mapper namespace="com.kaity.travel.backend.domain.todo.mapper.ItineraryMapper">
 
     <select id="getItineraryByTrip" parameterType="long" resultType="com.kaity.travel.backend.domain.todo.entity.Itinerary">
-        SELECT * 
+        SELECT   id
+                ,tripId
+                ,dayNumber
+                ,title
+                ,description
+                ,timeSlot
+                ,location
+                ,createdAt 
         FROM itinerary
-        WHERE trip_id = #{tripId}
-        ORDER BY day_number ASC
+        WHERE tripId = #{tripId}
+        ORDER BY dayNumber ASC
     </select>
 
     <insert id="createItinerary" parameterType="com.kaity.travel.backend.domain.todo.entity.Itinerary" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO itinerary (
-             trip_id
-            ,day_number
+             tripId
+            ,dayNumber
             ,title
             ,description
-            ,time_slot
+            ,timeSlot
             ,location
         )
         VALUES (
@@ -30,10 +37,10 @@
 
     <update id="updateItinerary" parameterType="com.kaity.travel.backend.domain.todo.entity.Itinerary">
         UPDATE itinerary 
-        SET    day_number   =    #{dayNumber}
+        SET    dayNumber   =    #{dayNumber}
               ,title        =    #{title}
               ,description  =    #{description}
-              ,time_slot    =    #{timeSlot}
+              ,timeSlot    =    #{timeSlot}
               ,location     =    #{location}
         WHERE id = #{id}
     </update>

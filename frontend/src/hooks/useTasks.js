@@ -3,7 +3,7 @@ import axios from "axios";
 import API_BASE_URL from "../config";
 
 const useTasks = (tripId = null) => {
-  const [task, setTasks] = useState([]);
+  const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
     fetchTasks();
@@ -13,9 +13,10 @@ const useTasks = (tripId = null) => {
     try {
       const endpoint = tripId ? `${API_BASE_URL}/task?trip_id=${tripId}` : `${API_BASE_URL}/task`;
       const response = await axios.get(endpoint);
-      setTasks(response.data);
+      setTasks(Array.isArray(response.data)? response.data : []);
     } catch (error) {
       console.error("Error fetching task:", error);
+      setTasks([]);
     }
   };
 
@@ -37,7 +38,7 @@ const useTasks = (tripId = null) => {
     }
   };
 
-  return { task, addTask, deleteTask };
+  return { tasks, addTask, deleteTask };
 };
 
 export default useTasks;

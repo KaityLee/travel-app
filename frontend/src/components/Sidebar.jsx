@@ -1,21 +1,27 @@
 import React, { useState } from "react";
 import { List, Button, Divider } from "antd";
 import useTrips from "../hooks/useTrips";
-import useTasks from "../hooks/useTasks";
-import useItineraries from "../hooks/useItineraries"; // ✅ Import Itinerary Hook
-import AddTaskForm from "./AddTaskForm";
+import useItineraries from "../hooks/useItineraries";
 import AddTripForm from "./AddTripForm";
 import AddItineraryForm from "./AddItineraryForm";
 
-const Sidebar = () => {
-  const { trips, deleteTrip } = useTrips();
-  const [selectedTrip, setSelectedTrip] = useState(null);
-  const { tasks, deleteTask } = useTasks(selectedTrip);
-  const { itineraries, deleteItinerary } = useItineraries(selectedTrip); // ✅ Use Itinerary Hook
+const Sidebar = ({ setSelectedTrip }) => {
+  const { trips, addTrip, deleteTrip } = useTrips();
+  const [selectedTripId, setSelectedTripId] = useState(null);
+  const { fetchItineraries, addItinerary, deleteItinerary } = useItineraries();
+  const [itineraries, setItineraries] = useState([]); // ✅ Ensure itineraries is an array
   const [isTripModalOpen, setIsTripModalOpen] = useState(false);
-  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [isItineraryModalOpen, setIsItineraryModalOpen] = useState(false);
 
+  const openGoogleMaps = (locationName) => {
+    if (!locationName) {
+      alert("No location available for this itinerary.");
+      return;
+    }
+    const formattedLocation = encodeURIComponent(locationName); // ✅ Ensure safe URL encoding
+    window.open(`https://www.google.com/maps/search/?q=${formattedLocation}`, "_blank");
+  };
+  
   return (
     <div>
       <h2>✈️ Travel Plans</h2>
@@ -26,70 +32,79 @@ const Sidebar = () => {
         dataSource={trips}
         renderItem={(trip) => (
           <List.Item
+            onClick={async () => {
+              setSelectedTrip(trip.id);
+              setSelectedTripId(trip.id);
+              const tripItineraries = await fetchItineraries(trip.id);
+              setItineraries(Array.isArray(tripItineraries) ? tripItineraries : []); // ✅ Ensure it's an array
+            }}
+            style={{
+              cursor: "pointer",
+              background: selectedTripId === trip.id ? "#e6f7ff" : "white",
+              borderRadius: "5px",
+              padding: "10px",
+              marginBottom: "5px",
+            }}
             actions={[
-              <Button size="small" onClick={() => setSelectedTrip(trip.id)}>
-                View Details
-              </Button>,
-              <Button danger size="small" onClick={() => deleteTrip(trip.id)}>
+              <Button danger size="small" onClick={(e) => {
+                e.stopPropagation();
+                deleteTrip(trip.id);
+              }}>
                 Delete
               </Button>,
             ]}
           >
-            <strong>{trip.trip_name}</strong> ({trip.start_date} → {trip.end_date})
+            <strong>{trip.tripName}</strong> ({trip.startDate} → {trip.endDate})
           </List.Item>
         )}
       />
-      <AddTripForm visible={isTripModalOpen} onClose={() => setIsTripModalOpen(false)} />
+      <AddTripForm 
+        visible={isTripModalOpen} 
+        onClose={() => setIsTripModalOpen(false)}
+        addTrip={addTrip}
+      />
 
-      {selectedTrip && (
-        <>
-          <Divider />
-          <h3>📌 Tasks for Trip</h3>
-          <Button type="primary" onClick={() => setIsTaskModalOpen(true)}>
-            + Add Task
-          </Button>
-          <List
-            dataSource={tasks}
-            renderItem={(task) => (
-              <List.Item
-                actions={[
-                  <Button danger size="small" onClick={() => deleteTask(task.id)}>
-                    Delete
-                  </Button>,
-                ]}
+      <Divider />
+      <h3>📅 Itinerary</h3>
+      <Button
+        type="primary"
+        onClick={() => {
+          if (!selectedTripId) {
+            alert("Please select a trip first!");
+            return;
+          }
+          setIsItineraryModalOpen(true);
+        }}
+      >
+        + Add Itinerary
+      </Button>
+      <List
+        dataSource={itineraries} // ✅ Use `itineraries` instead of `fetchItineraries`
+        renderItem={(itinerary) => (
+          <List.Item
+            actions={[
+              <Button 
+              type="link" 
+              onClick={() => openGoogleMaps(itinerary.location)} // ✅ Search by location name
+              disabled={!itinerary.location}
               >
-                <strong>{task.title}</strong> ({task.status})
-              </List.Item>
-            )}
-          />
-          <AddTaskForm visible={isTaskModalOpen} onClose={() => setIsTaskModalOpen(false)} tripId={selectedTrip} />
-
-          <Divider />
-          <h3>📅 Itinerary</h3>
-          <Button type="primary" onClick={() => setIsItineraryModalOpen(true)}>
-            + Add Itinerary
-          </Button>
-          <List
-            dataSource={itineraries}
-            renderItem={(itinerary) => (
-              <List.Item
-                actions={[
-                  <Button danger size="small" onClick={() => deleteItinerary(itinerary.id)}>
-                    Delete
-                  </Button>,
-                ]}
-              >
-                <strong>Day {itinerary.day_number}: {itinerary.title}</strong> ({itinerary.time_slot})
-              </List.Item>
-            )}
-          />
-          <AddItineraryForm
-            visible={isItineraryModalOpen}
-            onClose={() => setIsItineraryModalOpen(false)}
-            tripId={selectedTrip}
-          />
-        </>
-      )}
+              📍 구글맵 위치 보기
+              </Button>,
+              <Button danger size="small" onClick={() => deleteItinerary(itinerary.id, selectedTripId)}>
+                Delete
+              </Button>,
+            ]}
+          >
+            <strong>Day {itinerary.dayNumber}: {itinerary.title}</strong> ({itinerary.timeSlot})
+          </List.Item>
+        )}
+      />
+      <AddItineraryForm
+        visible={isItineraryModalOpen}
+        onClose={() => setIsItineraryModalOpen(false)}
+        addItinerary={addItinerary}
+        tripId={selectedTripId}
+      />
     </div>
   );
 };

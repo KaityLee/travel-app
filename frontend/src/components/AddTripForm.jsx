@@ -1,21 +1,21 @@
 import React from "react";
-import { Modal, Form, Input, DatePicker, Button } from "antd";
+import { Modal, Form, Input, DatePicker, Button, notification } from "antd";
 import useTrips from "../hooks/useTrips";
 
-const AddTripForm = ({ visible, onClose }) => {
-  const { addTrip } = useTrips();
+const AddTripForm = ({ visible, onClose, addTrip }) => {
   const [form] = Form.useForm();
 
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
       await addTrip({
-        trip_name: values.trip_name,
+        tripName: values.trip_name,
         destination: values.destination,
-        start_date: values.dates[0].format("YYYY-MM-DD"),
-        end_date: values.dates[1].format("YYYY-MM-DD"),
+        startDate: values.dates[0].format("YYYY-MM-DD"),
+        endDate: values.dates[1].format("YYYY-MM-DD"),
         notes: values.notes || "",
       });
+
       form.resetFields();
       onClose();
     } catch (error) {

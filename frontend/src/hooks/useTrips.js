@@ -3,7 +3,7 @@ import axios from "axios";
 import API_BASE_URL from "../config";
 
 const useTrips = () => {
-  const [trip, setTrips] = useState([]);
+  const [trips, setTrips] = useState([]);
 
   useEffect(() => {
     fetchTrips();
@@ -12,9 +12,12 @@ const useTrips = () => {
   const fetchTrips = async () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/trip`);
-      setTrips(response.data);
+
+
+      setTrips(Array.isArray(response.data.data.result) ? response.data.data.result : []);
     } catch (error) {
       console.error("Error fetching trip:", error);
+      setTrips([]);
     }
   };
 
@@ -36,7 +39,7 @@ const useTrips = () => {
     }
   };
 
-  return { trip, addTrip, deleteTrip };
+  return { trips, addTrip, deleteTrip };
 };
 
 export default useTrips;

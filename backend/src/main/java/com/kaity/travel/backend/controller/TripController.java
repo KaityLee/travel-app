@@ -65,8 +65,8 @@ public class TripController {
         }
     }
 
-    @DeleteMapping
-    public Map<String, Object> deleteTrip(@RequestBody Long id) {
+    @DeleteMapping("/{id}")
+    public Map<String, Object> deleteTrip(@PathVariable Long id) {
         try {
             tripService.deleteTrip(id);
             return ApiResponseUtils.createResponse("삭제완료");
