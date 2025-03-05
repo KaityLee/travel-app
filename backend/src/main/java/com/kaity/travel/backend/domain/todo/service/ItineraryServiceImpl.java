@@ -21,6 +21,11 @@ public class ItineraryServiceImpl implements ItineraryService{
     public List<Itinerary> getItineraryByTrip(Long tripId) {
         return itineraryMapper.getItineraryByTrip(tripId);
     }
+    
+    @Override
+    public Itinerary getItineraryById(Long id) {
+        return itineraryMapper.getItineraryById(id);
+    }
 
     @Override
     public void createItinerary(Itinerary itinerary) {
@@ -36,5 +41,6 @@ public class ItineraryServiceImpl implements ItineraryService{
     public void deleteItinerary(Long id) {
         itineraryMapper.deleteItinerary(id);
     }
+
     
 }

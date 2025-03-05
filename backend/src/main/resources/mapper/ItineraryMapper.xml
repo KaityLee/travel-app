@@ -10,10 +10,29 @@
                 ,description
                 ,timeSlot
                 ,location
+                ,address
+                ,latitude
+                ,longitude
                 ,createdAt 
         FROM itinerary
         WHERE tripId = #{tripId}
         ORDER BY dayNumber ASC
+    </select>
+
+    <select id="getItineraryById" parameterType="long" resultType="com.kaity.travel.backend.domain.todo.entity.Itinerary">
+        SELECT   id
+                ,tripId
+                ,dayNumber
+                ,title
+                ,description
+                ,timeSlot
+                ,location
+                ,address
+                ,latitude
+                ,longitude
+                ,createdAt 
+        FROM itinerary
+        WHERE id = #{id}
     </select>
 
     <insert id="createItinerary" parameterType="com.kaity.travel.backend.domain.todo.entity.Itinerary" useGeneratedKeys="true" keyProperty="id">
@@ -24,6 +43,9 @@
             ,description
             ,timeSlot
             ,location
+            ,address
+            ,latitude
+            ,longitude
         )
         VALUES (
              #{tripId}
@@ -32,16 +54,22 @@
             ,#{description}
             ,#{timeSlot}
             ,#{location}
+            ,#{address}
+            ,#{latitude}
+            ,#{longitude}
         )
     </insert>
 
     <update id="updateItinerary" parameterType="com.kaity.travel.backend.domain.todo.entity.Itinerary">
         UPDATE itinerary 
         SET    dayNumber   =    #{dayNumber}
-              ,title        =    #{title}
-              ,description  =    #{description}
+              ,title       =    #{title}
+              ,description =    #{description}
               ,timeSlot    =    #{timeSlot}
-              ,location     =    #{location}
+              ,location    =    #{location}
+              ,address     =    #{address}
+              ,latitude    =    #{latitude}
+              ,longitude   =    #{longitude}
         WHERE id = #{id}
     </update>
 

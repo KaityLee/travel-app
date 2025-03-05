@@ -13,23 +13,32 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kaity.travel.backend.common.utils.ApiResponseUtils;
-import com.kaity.travel.backend.domain.todo.entity.Location;
-import com.kaity.travel.backend.domain.todo.interfaces.LocationService;
+import com.kaity.travel.backend.domain.todo.entity.Trip;
+import com.kaity.travel.backend.domain.todo.interfaces.TripService;
 
 @RestController
-@RequestMapping("/api/location")
-public class LocationApiController {
-    
-    private final LocationService locationService;
+@RequestMapping("/api/trip")
+public class TripApiController {
+    private final TripService tripService;
 
-    public LocationApiController(LocationService locationService) {
-        this.locationService = locationService;
+    public TripApiController(TripService tripService) {
+        this.tripService = tripService;
+    }
+
+    @GetMapping
+    public Map<String, Object> getAllTrips() {
+        try {
+            List<Trip> results = tripService.getAllTrips();
+            return ApiResponseUtils.createResponse(results);
+        } catch (Exception e) {
+            return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
-    public Map<String, Object> getLocationsByTrip(@PathVariable Long tripId) {
+    public Map<String, Object> getTripById(@PathVariable Long id) {
         try {
-            var result = locationService.getLocationsByTrip(tripId);
+            Trip result = tripService.getTripById(id);
             return ApiResponseUtils.createResponse(result);
         } catch (Exception e) {
             return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage());
@@ -37,9 +46,9 @@ public class LocationApiController {
     }
 
     @PostMapping
-    public Map<String, Object> createLocation(@RequestBody Location location) {
+    public Map<String, Object> createTrip(@RequestBody Trip trip) {
         try {
-            locationService.createLocation(location);
+            tripService.createTrip(trip);
             return ApiResponseUtils.createResponse("생성완료");
         } catch (Exception e) {
             return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage());
@@ -47,19 +56,19 @@ public class LocationApiController {
     }
 
     @PutMapping
-    public Map<String, Object> updateLocation(@RequestBody Location location) {
+    public Map<String, Object> updateTrip(@RequestBody Trip trip) {
         try {
-            locationService.updateLocation(location);
+            tripService.updateTrip(trip);
             return ApiResponseUtils.createResponse("수정완료");
         } catch (Exception e) {
             return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage());
         }
     }
 
-    @DeleteMapping
-    public Map<String, Object> deleteLocation(@RequestBody Long id) {
+    @DeleteMapping("/{id}")
+    public Map<String, Object> deleteTrip(@PathVariable Long id) {
         try {
-            locationService.deleteLocation(id);
+            tripService.deleteTrip(id);
             return ApiResponseUtils.createResponse("삭제완료");
         } catch (Exception e) {
             return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage());

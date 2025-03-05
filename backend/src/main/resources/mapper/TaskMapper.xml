@@ -9,8 +9,6 @@
                 ,dueDate
                 ,status
                 ,priority
-                ,travelRelated
-                ,tripId
                 ,createdAt
         FROM task
         ORDER BY dueDate ASC
@@ -23,8 +21,6 @@
                 ,dueDate
                 ,status
                 ,priority
-                ,travelRelated
-                ,tripId
                 ,createdAt 
         FROM task
         WHERE id = #{id}
@@ -37,8 +33,6 @@
             ,dueDate
             ,status
             ,priority
-            ,travelRelated
-            ,tripId
         )
         VALUES (
             #{title}
@@ -46,8 +40,6 @@
             ,#{dueDate}
             ,#{status}
             ,#{priority}
-            ,#{travelRelated}
-            ,#{tripId}
         )
     </insert>
 
@@ -58,8 +50,6 @@
               ,dueDate     =    #{dueDate}
               ,status      =    #{status}
               ,priority    =    #{priority}
-              ,travelRelated = #{travelRelated}
-              ,tripId      =    #{tripId}
         WHERE id = #{id}
     </update>
 

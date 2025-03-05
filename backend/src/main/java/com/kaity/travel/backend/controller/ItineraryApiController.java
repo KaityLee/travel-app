@@ -29,6 +29,16 @@ public class ItineraryApiController {
             return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage()); 
         }
     }
+    
+    @GetMapping("/{tripId}")
+    public Map<String,Object> getItineraryById(@PathVariable Long id) {
+        try {
+            Itinerary results = itineraryService.getItineraryById(id);
+            return ApiResponseUtils.createResponse(results); 
+        } catch (Exception e) {
+            return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage()); 
+        }
+    }
 
     @PostMapping
     public Map<String,Object> createItinerary(@RequestBody Itinerary param) {

@@ -2,13 +2,15 @@ import { Modal, Input, Button, List, Checkbox, message } from "antd";
 import { SendOutlined } from "@ant-design/icons";
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
+import useTasks from "../hooks/useTasks";
 
-const ChatWithLLMModal = ({ isOpen, onClose, addTask }) => {
+const ChatWithLLMModal = ({ isOpen, onClose }) => {
   const [userInput, setUserInput] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
   const [suggestedTasks, setSuggestedTasks] = useState([]); // ✅ AI Suggested Tasks
   const [selectedTasks, setSelectedTasks] = useState([]); // ✅ Selected Tasks
   const chatEndRef = useRef(null);
+  const { tasks, addTask } = useTasks();
 
   useEffect(() => {
     if (chatEndRef.current) {

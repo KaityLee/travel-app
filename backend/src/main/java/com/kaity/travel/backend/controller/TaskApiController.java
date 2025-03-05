@@ -11,17 +11,17 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/task")
-public class TaskController {
+public class TaskApiController {
     private final TaskService taskService;
 
-    public TaskController(TaskService taskService) {
+    public TaskApiController(TaskService taskService) {
         this.taskService = taskService;
     }
 
     @GetMapping
     public Map<String,Object> getAllTasks() {
         try {
-            var results = taskService.getAllTasks();
+            List<Task> results = taskService.getAllTasks();
             return ApiResponseUtils.createResponse(results); 
         } catch (Exception e) {
             return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage()); 
@@ -31,7 +31,7 @@ public class TaskController {
     @GetMapping("/{id}")
     public Map<String,Object> getTaskById(@PathVariable Long id) {
         try {
-            var results = taskService.getTaskById(id);
+            Task results = taskService.getTaskById(id);
             return ApiResponseUtils.createResponse(results); 
         } catch (Exception e) {
             return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage()); 
