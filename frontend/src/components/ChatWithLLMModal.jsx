@@ -7,8 +7,8 @@ import useTasks from "../hooks/useTasks";
 const ChatWithLLMModal = ({ isOpen, onClose }) => {
   const [userInput, setUserInput] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
-  const [suggestedTasks, setSuggestedTasks] = useState([]); // ✅ AI Suggested Tasks
-  const [selectedTasks, setSelectedTasks] = useState([]); // ✅ Selected Tasks
+  const [suggestedTasks, setSuggestedTasks] = useState([]); 
+  const [selectedTasks, setSelectedTasks] = useState([]); 
   const chatEndRef = useRef(null);
   const { tasks, addTask } = useTasks();
 
@@ -37,7 +37,7 @@ const ChatWithLLMModal = ({ isOpen, onClose }) => {
         },
         {
           headers: {
-            Authorization: `Bearer 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`, // ✅ Use your actual API key
+            Authorization: `Bearer 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`, 
             "Content-Type": "application/json",
           },
         }
@@ -71,12 +71,16 @@ const ChatWithLLMModal = ({ isOpen, onClose }) => {
     );
   };
 
-  const handleAddSelectedTasks = () => {
-    addTask(selectedTasks);
-    message.success("Added to Task List!");
-    setSelectedTasks([]); // Clear selection
-    setSuggestedTasks([]); // Clear recommendations after adding
-    onClose(); // Close modal
+  const handleAddSelectedTasks = async () => {
+    if (selectedTasks.length === 0) {
+      message.warning("추가할 항목을 선택하세요.");
+      return;
+    }
+    await addTask(selectedTasks); 
+    message.success("성공적으로 추가되었습니다.");
+    setSelectedTasks([]); 
+    setSuggestedTasks([]); 
+    onClose(); 
   };
 
   const handleKeyDown = (e) => {
@@ -95,7 +99,6 @@ const ChatWithLLMModal = ({ isOpen, onClose }) => {
       width={1000} 
       style={{ top: 50 }} 
     >
-      {/* 🟢 Chat Display Area */}
       <div
         style={{
           height: "400px", 
@@ -128,7 +131,6 @@ const ChatWithLLMModal = ({ isOpen, onClose }) => {
         <div ref={chatEndRef} />
       </div>
 
-      {/* 📝 Input Field + Send Button */}
       <div style={{ display: "flex", marginTop: "10px" }}>
         <Input.TextArea
           rows={2}
@@ -141,7 +143,6 @@ const ChatWithLLMModal = ({ isOpen, onClose }) => {
         <Button type="primary" onClick={handleSendMessage} icon={<SendOutlined />} style={{ marginLeft: "10px" }} />
       </div>
 
-      {/* ✅ AI Recommendations (Selectable) */}
       {suggestedTasks.length > 0 && (
         <>
           <h4 style={{ marginTop: "15px" }}>AI 추천 목록 :</h4>

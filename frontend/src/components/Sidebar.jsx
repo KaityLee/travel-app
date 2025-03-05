@@ -9,7 +9,7 @@ const Sidebar = ({ setSelectedTrip }) => {
   const { trips, addTrip, deleteTrip } = useTrips();
   const [selectedTripId, setSelectedTripId] = useState(null);
   const { fetchItineraries, addItinerary, deleteItinerary } = useItineraries();
-  const [itineraries, setItineraries] = useState([]); // ✅ Ensure itineraries is an array
+  const [itineraries, setItineraries] = useState([]); 
   const [isTripModalOpen, setIsTripModalOpen] = useState(false);
   const [isItineraryModalOpen, setIsItineraryModalOpen] = useState(false);
 
@@ -18,15 +18,15 @@ const Sidebar = ({ setSelectedTrip }) => {
       alert("No location available for this itinerary.");
       return;
     }
-    const formattedLocation = encodeURIComponent(locationName); // ✅ Ensure safe URL encoding
+    const formattedLocation = encodeURIComponent(locationName); 
     window.open(`https://www.google.com/maps/search/?q=${formattedLocation}`, "_blank");
   };
   
   return (
     <div>
-      <h2>✈️ Travel Plans</h2>
+      <h2>✈️ 여행 계획</h2>
       <Button type="primary" onClick={() => setIsTripModalOpen(true)}>
-        + Add Trip
+        + 새로운 여행
       </Button>
       <List
         dataSource={trips}
@@ -36,7 +36,7 @@ const Sidebar = ({ setSelectedTrip }) => {
               setSelectedTrip(trip.id);
               setSelectedTripId(trip.id);
               const tripItineraries = await fetchItineraries(trip.id);
-              setItineraries(Array.isArray(tripItineraries) ? tripItineraries : []); // ✅ Ensure it's an array
+              setItineraries(Array.isArray(tripItineraries) ? tripItineraries : []); 
             }}
             style={{
               cursor: "pointer",
@@ -65,7 +65,7 @@ const Sidebar = ({ setSelectedTrip }) => {
       />
 
       <Divider />
-      <h3>📅 Itinerary</h3>
+      <h3>📅 여행일정</h3>
       <Button
         type="primary"
         onClick={() => {
@@ -76,7 +76,7 @@ const Sidebar = ({ setSelectedTrip }) => {
           setIsItineraryModalOpen(true);
         }}
       >
-        + Add Itinerary
+        + 일정 추가
       </Button>
       <List
         dataSource={itineraries} // ✅ Use `itineraries` instead of `fetchItineraries`
@@ -95,7 +95,7 @@ const Sidebar = ({ setSelectedTrip }) => {
               </Button>,
             ]}
           >
-            <strong>Day {itinerary.dayNumber}: {itinerary.title}</strong> ({itinerary.timeSlot})
+            <strong>Day {itinerary.dayNumber}: {itinerary.title}</strong> {itinerary.timeSlot}
           </List.Item>
         )}
       />

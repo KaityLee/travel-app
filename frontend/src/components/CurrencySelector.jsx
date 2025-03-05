@@ -31,11 +31,11 @@ const CurrencySelector = () => {
   const [selectedCurrency, setSelectedCurrency] = useState("JPY");
 
   const availableCurrencies = [
-    { code: "JPY", name: "🇯🇵 JPY" },
-    { code: "USD", name: "🇺🇸 USD" },
-    { code: "EUR", name: "🇪🇺 EUR" },
-    { code: "CNY", name: "🇨🇳 CNY" },
-    { code: "GBP", name: "🇬🇧 GBP" },
+    { code: "JPY", name: "🇯🇵 엔" },
+    { code: "USD", name: "🇺🇸 달러" },
+    { code: "EUR", name: "🇪🇺 유로" },
+    { code: "CNY", name: "🇨🇳 위안" },
+    { code: "GBP", name: "🇬🇧 파운드" },
   ];
 
   useEffect(() => {
@@ -82,7 +82,7 @@ const CurrencySelector = () => {
           fontSize: "16px",
           fontWeight: "bold",
           transition: "color 0.5s ease",
-          color: previousKrwRate && krwRate !== previousKrwRate ? "red" : "#1890ff",
+          color: previousKrwRate && krwRate !== previousKrwRate ? "red" : "blue",
         }}
       >
         {currencyRate} = {krwRate}

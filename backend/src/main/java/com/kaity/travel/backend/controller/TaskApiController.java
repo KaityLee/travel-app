@@ -47,18 +47,29 @@ public class TaskApiController {
             return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage()); 
         }
     }
-    @PutMapping
-    public Map<String,Object> updateTask(@RequestBody Task task) {
-        try {
-            taskService.updateTask(task);
-            return ApiResponseUtils.createResponse("수정완료"); 
-        } catch (Exception e) {
-            return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage()); 
-        }
-    }
 
-    @DeleteMapping
-    public Map<String,Object> deleteTask(@RequestBody Long id) {
+    @PatchMapping("/{id}")
+    public Map<String, Object> updateTask(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+        try {
+            taskService.updateTask(id, updates);
+            return ApiResponseUtils.createResponse("수정 완료");
+        } catch (Exception e) {
+            return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage());
+        }
+}
+
+    // @PutMapping
+    // public Map<String,Object> updateTask(@RequestBody Task task) {
+    //     try {
+    //         taskService.updateTask(task);
+    //         return ApiResponseUtils.createResponse("수정완료"); 
+    //     } catch (Exception e) {
+    //         return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage()); 
+    //     }
+    // }
+
+    @DeleteMapping("/{id}")
+    public Map<String,Object> deleteTask(@PathVariable Long id) {
         try {
             taskService.deleteTask(id);
             return ApiResponseUtils.createResponse("삭제완료"); 

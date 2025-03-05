@@ -16,25 +16,73 @@ public class Task {
     private String priority;
     private LocalDateTime createdAt;
 
+    // ✅ Convert English status to Korean
     public void setStatus(String status) {
         if (status == null || status.isEmpty()) {
             this.status = "대기 중"; 
-        } else if (status.equals("대기 중") || status.equals("완료") || status.equals("진행 중")) {
-            this.status = status;
         } else {
-            this.status = "알 수 없음";
+            switch (status.toLowerCase()) {
+                case "pending":
+                    this.status = "대기 중";
+                    break;
+                case "in-progress":
+                    this.status = "진행 중";
+                    break;
+                case "completed":
+                    this.status = "완료";
+                    break;
+                default:
+                    this.status = "진행 중";
+            }
         }
     }
 
+    // ✅ Convert English priority to Korean
     public void setPriority(String priority) {
         if (priority == null || priority.isEmpty()) {
             this.priority = "보통"; 
-        } else if (priority.equals("낮음") || priority.equals("보통") || priority.equals("높음")) {
-            this.priority = priority;
         } else {
-            this.priority = "알 수 없음"; 
+            switch (priority.toLowerCase()) {
+                case "low":
+                    this.priority = "낮음";
+                    break;
+                case "medium":
+                    this.priority = "보통";
+                    break;
+                case "high":
+                    this.priority = "높음";
+                    break;
+                default:
+                    this.priority = "보통";
+            }
         }
     }
 
-    
+    // ✅ Convert Korean status back to English when sending response
+    public String getStatus() {
+        switch (this.status) {
+            case "대기 중":
+                return "pending";
+            case "진행 중":
+                return "in-progress";
+            case "완료":
+                return "completed";
+            default:
+                return "in-progress";
+        }
+    }
+
+    // ✅ Convert Korean priority back to English when sending response
+    public String getPriority() {
+        switch (this.priority) {
+            case "낮음":
+                return "low";
+            case "보통":
+                return "medium";
+            case "높음":
+                return "high";
+            default:
+                return "medium";
+        }
+    }
 }

@@ -25,20 +25,20 @@ const App = () => {
           flex: 1,
           padding: "50px",
           transition: "margin-right 0.3s ease",
-          marginRight: isSidebarOpen ? "300px" : "0px", // Push content when sidebar is open
+          marginRight: isSidebarOpen ? "400px" : "0px", // Push content when sidebar is open
         }}
       >
         {/* 📅 Calendar */}
         <NoticeCalendar />
 
         {/* 📌 Task List (Now includes AI-generated tasks) */}
-        <TaskList selectedTrip={selectedTrip} tasks={taskList} />
+        <TaskList />
       </div>
 
       {/* Sidebar (Collapsible, Right-Aligned) */}
       <div
         style={{
-          width: isSidebarOpen ? "300px" : "0px", // Expand/Collapse Width
+          width: isSidebarOpen ? "400px" : "0px", // Expand/Collapse Width
           transition: "width 0.3s ease",
           overflow: "hidden",
           background: "#f0f2f5",
@@ -61,7 +61,7 @@ const App = () => {
         icon={isSidebarOpen ? "x" : "📅"}
         style={{
           position: "absolute",
-          right: isSidebarOpen ? "300px" : "0px", // Move with sidebar
+          right: isSidebarOpen ? "400px" : "0px", // Move with sidebar
           top: "50%",
           transform: "translateY(-50%)",
           height: "60px",
@@ -75,7 +75,7 @@ const App = () => {
         tooltip={<div>🤖AI와 대화하기</div>}
         style={{
           transition: "right 0.3s ease",
-          right: isSidebarOpen ? "360px" : "30px",
+          right: isSidebarOpen ? "460px" : "30px",
         }}
         onClick={() => setIsChatModalOpen(true)} // ✅ Open AI Chat Modal
       />
