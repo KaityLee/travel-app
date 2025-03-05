@@ -11,6 +11,6 @@ public interface TaskService {
     Task getTaskById(Long id);
     void createTask(Task task);
     // void updateTask(Task task);
-    void updateTask(Long id, Map<String, Object> updates);
+    void updateTask(Task task);
     void deleteTask(Long id);
 }

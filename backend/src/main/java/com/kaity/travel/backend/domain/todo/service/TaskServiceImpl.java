@@ -35,30 +35,8 @@ public class TaskServiceImpl implements TaskService {
     }
     
     @Override
-    public void updateTask(Long id, Map<String, Object> updates) {
-        Task existingTask = taskMapper.getTaskById(id);
-        if (existingTask == null) {
-            throw new RuntimeException("Task not found");
-        }
-
-        // Update only fields that exist in the request
-        if (updates.containsKey("title")) {
-            existingTask.setTitle((String) updates.get("title"));
-        }
-        if (updates.containsKey("description")) {
-            existingTask.setDescription((String) updates.get("description"));
-        }
-        if (updates.containsKey("dueDate")) {
-            existingTask.setDueDate(LocalDateTime.parse((String) updates.get("dueDate")));
-        }
-        if (updates.containsKey("status")) {
-            existingTask.setStatus((String) updates.get("status"));
-        }
-        if (updates.containsKey("priority")) {
-            existingTask.setPriority((String) updates.get("priority"));
-        }
-
-        taskMapper.updateTask(existingTask);
+    public void updateTask(Task task) {
+        taskMapper.updateTask(task);
     }
 
     // @Override

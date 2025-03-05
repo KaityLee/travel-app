@@ -1,44 +1,59 @@
 import React, { useState } from "react";
-import { FloatButton } from "antd";
+import { Button, FloatButton, Drawer, Layout, Menu, theme } from "antd";
 import NoticeCalendar from "./components/Notice_Calendar";
 import Sidebar from "./components/Sidebar";
 import TaskList from "./components/TaskList";
-import ChatWithLLMModal from "./components/ChatWithLLMModal"; // ✅ Import AI Chat Modal
-import { OpenAIOutlined } from "@ant-design/icons";
+import ChatWithLLMModal from "./components/ChatWithLLMModal"; 
+import "./index.css";
+import { OpenAIOutlined, DoubleRightOutlined, FormOutlined, RocketOutlined } from "@ant-design/icons";
 
 const App = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Sidebar state
-  const [selectedTrip, setSelectedTrip] = useState(null); // Selected Trip for TaskList
-  const [isChatModalOpen, setIsChatModalOpen] = useState(false); // ✅ AI Chat Modal State
-  const [taskList, setTaskList] = useState([]); // ✅ To-Do List from AI suggestions
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
+  const [isTaskListOpen, setIsTaskListOpen] = useState(false);
+  const [selectedTrip, setSelectedTrip] = useState(null); 
+  const [isChatModalOpen, setIsChatModalOpen] = useState(false); 
+  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+  const [taskList, setTaskList] = useState([]); 
 
-  // Function to add AI-generated tasks
+  const { Header, Content, Footer } = Layout;
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
+
   const handleAddTodo = (newTodos) => {
-    setTaskList([...taskList, ...newTodos]); // ✅ Add new todos to the existing list
+    setTaskList([...taskList, ...newTodos]); 
   };
 
   return (
+    <Layout>
+      <Header style={{ display: 'flex', alignItems: 'center' }}>
+        <div className="demo-logo" />
+        <Menu
+          theme="dark"
+          mode="horizontal"          
+          style={{ flex: 1, minWidth: 0 }}
+        >
+          <b>Travel App</b>
+        </Menu>
+      </Header>
+      <Content>
     <div style={{ display: "flex", height: "100vh", transition: "margin 0.3s ease" }}>
-      {/* Main Content (Calendar + Task List) */}
+      {/* Main (Calendar + Task List) */}
       <div
         style={{
           flex: 1,
-          padding: "50px",
+          padding: "40px 80px 0 80px",
           transition: "margin-right 0.3s ease",
-          marginRight: isSidebarOpen ? "400px" : "0px", // Push content when sidebar is open
+          marginRight: isSidebarOpen ? "400px" : "0px"
         }}
       >
-        {/* 📅 Calendar */}
         <NoticeCalendar />
-
-        {/* 📌 Task List (Now includes AI-generated tasks) */}
-        <TaskList />
       </div>
 
-      {/* Sidebar (Collapsible, Right-Aligned) */}
+      {/* Sidebar */}
       <div
         style={{
-          width: isSidebarOpen ? "400px" : "0px", // Expand/Collapse Width
+          width: isSidebarOpen ? "400px" : "0px",
           transition: "width 0.3s ease",
           overflow: "hidden",
           background: "#f0f2f5",
@@ -47,27 +62,75 @@ const App = () => {
           boxShadow: isSidebarOpen ? "-2px 0px 5px rgba(0,0,0,0.1)" : "none",
           position: "absolute",
           right: 0,
-          height: "100%",
+          height: "200%",
         }}
       >
-        {isSidebarOpen && <Sidebar setSelectedTrip={setSelectedTrip} />} {/* ✅ Sidebar Passes Trip Selection */}
+        {isSidebarOpen && <Sidebar setSelectedTrip={setSelectedTrip} />} 
       </div>
 
-      {/* 📌 Sidebar Toggle Button */}
+      {/* 📌 Sidebar Button */}
       <FloatButton
         type="primary"
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
         shape="square"
-        icon={isSidebarOpen ? "x" : "📅"}
+        icon={isSidebarOpen ? <DoubleRightOutlined /> : <RocketOutlined />}
         style={{
-          position: "absolute",
-          right: isSidebarOpen ? "400px" : "0px", // Move with sidebar
+          position: "fixed",
+          right: isSidebarOpen ? "380px" : "20px", 
           top: "50%",
           transform: "translateY(-50%)",
           height: "60px",
           transition: "right 0.3s ease",
         }}
       />
+
+      {/* 📌 Task List Button */}
+      {!isTaskListOpen && (
+        <FloatButton
+          type="primary"
+          icon={<FormOutlined />} 
+          tooltip={<div>📝 To-Do 리스트</div>}
+          shape="square"
+          style={{
+            transition: "bottom 0.3s ease",
+            position: "fixed",
+            top: "90%",
+            // bottom: "80px", // ✅ Keep it near the bottom
+            right: "50%",
+            // right: "30px", // ✅ Position it properly
+          }}
+          onClick={() => setIsTaskListOpen(true)} // ✅ Open Task List Drawer
+        />
+      )}
+
+      {/* Task List Drawer */}
+      <Drawer
+        title="📝 To-Do 리스트"
+        placement="bottom" 
+        closable={true}
+        onClose={() => setIsTaskListOpen(false)} 
+        open={isTaskListOpen} 
+        height={450} 
+        extra={ 
+          <Button type="primary" onClick={() => setIsTaskModalOpen(true)}>
+            + 할 일 추가
+          </Button>
+        }
+      >
+        <TaskList 
+          isTaskModalOpen={isTaskModalOpen}
+          setIsTaskModalOpen={setIsTaskModalOpen} 
+        />
+        <FloatButton
+          icon={<OpenAIOutlined />}
+          tooltip={<div>🤖AI와 대화하기</div>}
+          style={{
+            transition: "right 0.3s ease",
+            right: isSidebarOpen ? "460px" : "30px",
+          }}
+          onClick={() => setIsChatModalOpen(true)} 
+        />
+      </Drawer>
 
       {/* 📌 AI Chat Button */}
       <FloatButton
@@ -77,16 +140,20 @@ const App = () => {
           transition: "right 0.3s ease",
           right: isSidebarOpen ? "460px" : "30px",
         }}
-        onClick={() => setIsChatModalOpen(true)} // ✅ Open AI Chat Modal
+        onClick={() => setIsChatModalOpen(true)} 
       />
 
-      {/* ✅ AI Chat Modal */}
       <ChatWithLLMModal
         isOpen={isChatModalOpen}
         onClose={() => setIsChatModalOpen(false)}
-        onAddTodo={handleAddTodo} // ✅ Pass function to add AI tasks
+        onAddTodo={handleAddTodo}
       />
     </div>
+    </Content>
+      <Footer style={{ textAlign: 'center' }}>
+        Travel-App ©{new Date().getFullYear()} Created by Kaity
+      </Footer>
+    </Layout>
   );
 };
 

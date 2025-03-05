@@ -39,9 +39,28 @@ const useTasks = () => {
   };
 
   const updateTask = async (id, updatedFields) => {
+    if (!id) {
+      console.error("Error: Cannot update task without an ID!");
+      return;
+    }
+  
     try {
+      console.log("Updating Task with ID:", id); // ✅ Debugging
+      console.log("Updated Fields:", updatedFields); // ✅ Debugging
+  
       await axios.patch(`${API_BASE_URL}/task/${id}`, updatedFields);
-      fetchTasks(); // Refresh task list
+      fetchTasks();
+    } catch (error) {
+      console.error("Error updating task:", error);
+    }
+  };
+  
+  const updateStatusTask = async (id, updatedStatus) => {
+    try {
+      await axios.patch(`${API_BASE_URL}/task/${id}`, {
+        status: updatedStatus,
+      });
+      fetchTasks();
     } catch (error) {
       console.error("Error updating task:", error);
     }
@@ -60,7 +79,7 @@ const useTasks = () => {
     fetchTasks();
   }, []);
 
-  return { tasks, fetchTasks, addTask, updateTask, deleteTask };
+  return { tasks, fetchTasks, addTask, updateTask, updateStatusTask, deleteTask };
 };
 
 export default useTasks;

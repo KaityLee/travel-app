@@ -8,28 +8,25 @@ import useItineraries from "../hooks/useItineraries";
 const NoticeCalendar = () => {
   const { trips } = useTrips();
   const { tasks } = useTasks();
-  const { fetchItineraries } = useItineraries();
-  const [itineraries, setItineraries] = useState([]);
+  const { itineraries, fetchItineraries } = useItineraries();
 
   useEffect(() => {
-    const loadItineraries = async () => {
-      try {
-        const allItineraries = await Promise.all(trips.map((trip) => fetchItineraries(trip.id)));
-        setItineraries(allItineraries.flat());
-      } catch (error) {
-        console.error("Error fetching itineraries:", error);
-      }
-    };
-
     if (trips.length > 0) {
-      loadItineraries();
+      fetchItineraries(trips.map((trip) => trip.id)); // ✅ Pass an array of tripIds
     }
   }, [trips]);
 
   const safeTrips = Array.isArray(trips) ? trips : [];
   const safeTasks = Array.isArray(tasks) ? tasks : [];
   const safeItineraries = Array.isArray(itineraries) ? itineraries : [];
-
+  const navButtonStyle = {
+    border: "none",
+    background: "transparent",
+    fontSize: "20px",
+    cursor: "pointer",
+    padding: "5px",
+  };
+  
   // ✅ Function to calculate full itinerary date
   const getFullItineraryDate = (itinerary) => {
     const trip = safeTrips.find((trip) => trip.id === itinerary.tripId);
@@ -42,6 +39,8 @@ const NoticeCalendar = () => {
     return itineraryDate.toISOString().split("T")[0]; // Return YYYY-MM-DD format
   };
 
+  
+
   const cellRender = (current, info) => {
     if (info.type !== "date") return info.originNode;
 
@@ -52,7 +51,7 @@ const NoticeCalendar = () => {
     );
 
     const taskEvents = safeTasks.filter(
-      (task) => task.due_date?.slice(0, 10) === dateString
+      (task) => task.dueDate?.slice(0, 10) === dateString
     );
 
     const itineraryEvents = safeItineraries.filter(
@@ -98,14 +97,24 @@ const NoticeCalendar = () => {
   const customHeader = ({ value, onChange }) => {
     const year = value.year();
     const month = value.month();
+  
+    const goToPrevMonth = () => {
+      onChange(value.clone().subtract(1, "month")); // ✅ Moves to previous month
+    };
+  
+    const goToNextMonth = () => {
+      onChange(value.clone().add(1, "month")); // ✅ Moves to next month
+    };
 
     return (
       <Row justify="space-between" align="middle" style={{ padding: "10px 20px" }}>
-        <Col>
-          <h3>{value.format("YYYY년 MM월")}</h3>
+        <Col style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <button onClick={goToPrevMonth} style={navButtonStyle}>◀</button> {/* ✅ Left Button */}
+          <h2>{value.format("YYYY년 MM월")}</h2>
+          <button onClick={goToNextMonth} style={navButtonStyle}>▶</button> {/* ✅ Right Button */}
         </Col>
 
-        <Col style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        <Col style={{ display: "flex", alignItems: "center", gap: "10px", marginRight: "20px" }}>
           <Select
             value={year}
             onChange={(newYear) => onChange(value.clone().year(newYear))}

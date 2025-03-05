@@ -16,7 +16,7 @@ const ViewTaskModal = ({ visible, onClose, task }) => {
       case "completed":
         return "완료";
       default:
-        return "알 수 없음";
+        return "진행 중";
     }
   };
 
@@ -29,7 +29,7 @@ const ViewTaskModal = ({ visible, onClose, task }) => {
       case "high":
         return "높음";
       default:
-        return "알 수 없음";
+        return "보통";
     }
   };
 
@@ -40,7 +40,7 @@ const ViewTaskModal = ({ visible, onClose, task }) => {
         open={visible}
         onCancel={onClose}
         footer={[
-          <Button key="edit" type="primary" onClick={() => setIsEditModalOpen(true)}>
+          <Button key="edit" type="primary" onClick={() => setIsEditModalOpen(task)}>
             ✏️ 수정
           </Button>,
           <Button key="close" onClick={onClose}>
@@ -50,8 +50,8 @@ const ViewTaskModal = ({ visible, onClose, task }) => {
       >
         <Descriptions bordered column={1}>
           <Descriptions.Item label="제목">{task.title}</Descriptions.Item>
-          <Descriptions.Item label="설명">{task.description || "없음"}</Descriptions.Item>
-          <Descriptions.Item label="마감 기한">{task.due_date || "없음"}</Descriptions.Item>
+          <Descriptions.Item label="설명">{task.description || "-"}</Descriptions.Item>
+          <Descriptions.Item label="마감 기한">{task.due_date || "-"}</Descriptions.Item>
           <Descriptions.Item label="진행 상태">{getKoreanStatus(task.status)}</Descriptions.Item>
           <Descriptions.Item label="우선 순위">{getKoreanPriority(task.priority)}</Descriptions.Item>
         </Descriptions>
@@ -60,7 +60,7 @@ const ViewTaskModal = ({ visible, onClose, task }) => {
       {/* ✅ Edit Modal */}
       <EditTaskForm
         visible={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
+        onClose={() => setIsEditModalOpen(true)}
         task={task}
       />
     </>

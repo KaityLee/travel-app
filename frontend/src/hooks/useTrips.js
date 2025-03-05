@@ -12,19 +12,19 @@ const useTrips = () => {
   const fetchTrips = async () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/trip`);
-
-
-      setTrips(Array.isArray(response.data.data.result) ? response.data.data.result : []);
+      const tripData = Array.isArray(response.data.data.result) ? response.data.data.result : [];
+      setTrips(tripData);
     } catch (error) {
-      console.error("Error fetching trip:", error);
-      setTrips([]);
+      console.error("Error fetching trips:", error);
+      setTrips([]); 
     }
   };
+
 
   const addTrip = async (newTrip) => {
     try {
       await axios.post(`${API_BASE_URL}/trip`, newTrip);
-      fetchTrips(); 
+      await fetchTrips(); //
     } catch (error) {
       console.error("Error adding trip:", error);
     }
@@ -33,13 +33,13 @@ const useTrips = () => {
   const deleteTrip = async (id) => {
     try {
       await axios.delete(`${API_BASE_URL}/trip/${id}`);
-      fetchTrips(); 
+      await fetchTrips(); // 
     } catch (error) {
       console.error("Error deleting trip:", error);
     }
   };
 
-  return { trips, addTrip, deleteTrip };
+  return { trips, fetchTrips, addTrip, deleteTrip };
 };
 
 export default useTrips;

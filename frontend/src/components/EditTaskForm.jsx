@@ -4,34 +4,39 @@ import useTasks from "../hooks/useTasks";
 import dayjs from "dayjs";
 
 const EditTaskForm = ({ visible, onClose, task }) => {
-  const { addTask, fetchTasks } = useTasks();
+  const { updateTask, fetchTasks } = useTasks();
   const [form] = Form.useForm();
 
   useEffect(() => {
     if (task) {
       form.setFieldsValue({
+        id: task.id,
         title: task.title,
         description: task.description,
-        due_date: task.due_date ? dayjs(task.due_date) : null,
+        dueDate: task.due_date ? dayjs(task.due_date) : null,
         status: task.status,
         priority: task.priority,
       });
     }
-  }, [task, form]);
+  }, [task]);
 
   const handleUpdate = async () => {
     try {
       const values = await form.validateFields();
-      await addTask({
-        id: task.id, // ✅ Ensure the backend updates the existing task
+        console.log("Updating Task ID:", task?.id); // ✅ Debugging
+
+      if (!task?.id) {
+        console.error("Error: Task ID is missing!");
+        return;
+      }
+      await updateTask(task?.id, {
         title: values.title,
         description: values.description || "",
-        due_date: values.due_date ? values.due_date.format("YYYY-MM-DD HH:mm:ss") : null,
+        dueDate: values.due_date ? values.due_date.format("YYYY-MM-DD'T'HH:mm:ss") : null,
         status: values.status,
         priority: values.priority,
       });
-      message.success("할 일이 수정되었습니다!");
-      fetchTasks();
+      form.resetFields();
       onClose();
     } catch (error) {
       console.error("Task update failed:", error);
@@ -53,14 +58,14 @@ const EditTaskForm = ({ visible, onClose, task }) => {
         <Form.Item name="status" label="진행 상태" rules={[{ required: true }]}>
           <Select>
             <Select.Option value="pending">🟡 대기 중</Select.Option>
-            <Select.Option value="in-progress">🟠 진행 중</Select.Option>
-            <Select.Option value="completed">🟢 완료</Select.Option>
+            <Select.Option value="in-progress">🟢 진행 중</Select.Option>
+            <Select.Option value="completed">🔵 완료</Select.Option>
           </Select>
         </Form.Item>
         <Form.Item name="priority" label="우선 순위" rules={[{ required: true }]}>
           <Select>
             <Select.Option value="low">🟢 낮음</Select.Option>
-            <Select.Option value="medium">🟠 보통</Select.Option>
+            <Select.Option value="medium">🟡 보통</Select.Option>
             <Select.Option value="high">🔴 높음</Select.Option>
           </Select>
         </Form.Item>

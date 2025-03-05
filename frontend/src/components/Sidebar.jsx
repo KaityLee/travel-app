@@ -1,17 +1,20 @@
 import React, { useState } from "react";
-import { List, Button, Divider } from "antd";
+import { List, Button, Divider, message, Popconfirm } from "antd";
 import useTrips from "../hooks/useTrips";
 import useItineraries from "../hooks/useItineraries";
 import AddTripForm from "./AddTripForm";
 import AddItineraryForm from "./AddItineraryForm";
 
 const Sidebar = ({ setSelectedTrip }) => {
-  const { trips, addTrip, deleteTrip } = useTrips();
   const [selectedTripId, setSelectedTripId] = useState(null);
-  const { fetchItineraries, addItinerary, deleteItinerary } = useItineraries();
-  const [itineraries, setItineraries] = useState([]); 
   const [isTripModalOpen, setIsTripModalOpen] = useState(false);
   const [isItineraryModalOpen, setIsItineraryModalOpen] = useState(false);
+  // const [itineraries, setItineraries] = useState([]);
+
+  const { trips, addTrip, deleteTrip, fetchTrips } = useTrips();
+  const { itineraries, fetchItineraries, addItinerary, deleteItinerary } = useItineraries();
+
+  const [messageApi, contextHolder] = message.useMessage(); 
 
   const openGoogleMaps = (locationName) => {
     if (!locationName) {
@@ -21,7 +24,27 @@ const Sidebar = ({ setSelectedTrip }) => {
     const formattedLocation = encodeURIComponent(locationName); 
     window.open(`https://www.google.com/maps/search/?q=${formattedLocation}`, "_blank");
   };
-  
+
+  const handleSelectTrip = async (tripId) => {
+    setSelectedTripId(tripId);
+    setSelectedTrip(tripId); 
+    await fetchItineraries(tripId); 
+  };
+
+  const handleDeleteTrip = async (tripId) => {
+    try {
+      await deleteTrip(tripId);
+      messageApi.success("여행 및 일정이 삭제되었습니다.");
+
+      if (selectedTripId === tripId) {
+        setSelectedTripId(null);
+        fetchItineraries([]);
+      }
+    } catch (error) {
+      messageApi.error("삭제 중 오류가 발생했습니다.");
+    }
+  };
+
   return (
     <div>
       <h2>✈️ 여행 계획</h2>
@@ -32,12 +55,7 @@ const Sidebar = ({ setSelectedTrip }) => {
         dataSource={trips}
         renderItem={(trip) => (
           <List.Item
-            onClick={async () => {
-              setSelectedTrip(trip.id);
-              setSelectedTripId(trip.id);
-              const tripItineraries = await fetchItineraries(trip.id);
-              setItineraries(Array.isArray(tripItineraries) ? tripItineraries : []); 
-            }}
+            onClick={() => handleSelectTrip(trip.id)} 
             style={{
               cursor: "pointer",
               background: selectedTripId === trip.id ? "#e6f7ff" : "white",
@@ -46,12 +64,16 @@ const Sidebar = ({ setSelectedTrip }) => {
               marginBottom: "5px",
             }}
             actions={[
-              <Button danger size="small" onClick={(e) => {
-                e.stopPropagation();
-                deleteTrip(trip.id);
-              }}>
-                Delete
-              </Button>,
+              <Popconfirm
+                title="여행 삭제"
+                description="이 여행과 관련된 일정이 모두 삭제됩니다. 계속하시겠습니까?"
+                onConfirm={() => handleDeleteTrip(trip.id)} 
+                onCancel={() => messageApi.info("삭제가 취소되었습니다.")} 
+                okText="예"
+                cancelText="아니요"
+              >
+                <Button danger size="small">Delete</Button>
+              </Popconfirm>,
             ]}
           >
             <strong>{trip.tripName}</strong> ({trip.startDate} → {trip.endDate})
@@ -61,16 +83,21 @@ const Sidebar = ({ setSelectedTrip }) => {
       <AddTripForm 
         visible={isTripModalOpen} 
         onClose={() => setIsTripModalOpen(false)}
-        addTrip={addTrip}
+        addTrip={(trip) => {
+          addTrip(trip);
+          fetchTrips();
+        }}
       />
 
       <Divider />
-      <h3>📅 여행일정</h3>
+      <h3>📅 여행일정</h3>    
+      <>
+      {contextHolder}
       <Button
         type="primary"
         onClick={() => {
           if (!selectedTripId) {
-            alert("Please select a trip first!");
+            messageApi.warning("여행을 선택해주세요.");
             return;
           }
           setIsItineraryModalOpen(true);
@@ -78,19 +105,26 @@ const Sidebar = ({ setSelectedTrip }) => {
       >
         + 일정 추가
       </Button>
+      </>
+
       <List
-        dataSource={itineraries} // ✅ Use `itineraries` instead of `fetchItineraries`
+        dataSource={itineraries} 
         renderItem={(itinerary) => (
           <List.Item
             actions={[
               <Button 
               type="link" 
-              onClick={() => openGoogleMaps(itinerary.location)} // ✅ Search by location name
+              onClick={() => openGoogleMaps(itinerary.location)}
               disabled={!itinerary.location}
               >
               📍 구글맵 위치 보기
               </Button>,
-              <Button danger size="small" onClick={() => deleteItinerary(itinerary.id, selectedTripId)}>
+              <Button 
+                danger size="small"
+                onClick={async () => {
+                  await deleteItinerary(itinerary.id, selectedTripId);
+                  await fetchItineraries(selectedTripId);
+                }}>
                 Delete
               </Button>,
             ]}
@@ -102,7 +136,10 @@ const Sidebar = ({ setSelectedTrip }) => {
       <AddItineraryForm
         visible={isItineraryModalOpen}
         onClose={() => setIsItineraryModalOpen(false)}
-        addItinerary={addItinerary}
+        addItinerary={async (itinerary) => {
+          await addItinerary(itinerary, selectedTripId);
+          await fetchItineraries(selectedTripId);
+        }}
         tripId={selectedTripId}
       />
     </div>
