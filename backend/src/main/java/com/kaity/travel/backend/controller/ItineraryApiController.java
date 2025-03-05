@@ -20,7 +20,7 @@ public class ItineraryApiController {
     }
     
     
-    @GetMapping("/{tripId}")
+    @GetMapping("/trip/{tripId}")
     public Map<String,Object> getItineraryByTrip(@PathVariable Long tripId) {
         try {
             List<Itinerary> results = itineraryService.getItineraryByTrip(tripId);
@@ -30,7 +30,7 @@ public class ItineraryApiController {
         }
     }
     
-    @GetMapping("/{tripId}")
+    @GetMapping("/{id}")
     public Map<String,Object> getItineraryById(@PathVariable Long id) {
         try {
             Itinerary results = itineraryService.getItineraryById(id);

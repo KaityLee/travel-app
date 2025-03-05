@@ -16,7 +16,7 @@ CREATE TABLE task (
     dueDate DATETIME,
     status VARCHAR(20) DEFAULT '대기 중',
     priority VARCHAR(10) DEFAULT '보통',
-    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE itinerary (
