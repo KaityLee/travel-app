@@ -1,20 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { List, Button, Divider, message, Popconfirm } from "antd";
 import useTrips from "../hooks/useTrips";
 import useItineraries from "../hooks/useItineraries";
 import AddTripForm from "./AddTripForm";
+import EditTripForm from "./EditTripForm";
 import AddItineraryForm from "./AddItineraryForm";
+import EditItineraryForm from "./EditItineraryForm";
 
 const Sidebar = ({ setSelectedTrip }) => {
-  const [selectedTripId, setSelectedTripId] = useState(null);
+  const [selectedTrip, setSelectedTripState] = useState(null);
+  const { trips, fetchTrips, addTrip, updateTrip, deleteTrip } = useTrips();
   const [isTripModalOpen, setIsTripModalOpen] = useState(false);
   const [isItineraryModalOpen, setIsItineraryModalOpen] = useState(false);
-  // const [itineraries, setItineraries] = useState([]);
+  const [isEditTripModalOpen, setIsEditTripModalOpen] = useState(false);
+  const [editingTrip, setEditingTrip] = useState(null);
 
-  const { trips, addTrip, deleteTrip, fetchTrips } = useTrips();
-  const { itineraries, fetchItineraries, addItinerary, deleteItinerary } = useItineraries();
+  const { itineraries, fetchItineraries, addItinerary, updateItinerary, deleteItinerary } = useItineraries();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingItinerary, setEditingItinerary] = useState(null);
+  const [messageApi, contextHolder] = message.useMessage();
 
-  const [messageApi, contextHolder] = message.useMessage(); 
+  useEffect(() => {
+    if (selectedTrip) {
+      fetchItineraries(selectedTrip.id); // ✅ Load itineraries when trip is selected
+    }
+  }, [selectedTrip]);
 
   const openGoogleMaps = (locationName) => {
     if (!locationName) {
@@ -25,24 +35,34 @@ const Sidebar = ({ setSelectedTrip }) => {
     window.open(`https://www.google.com/maps/search/?q=${formattedLocation}`, "_blank");
   };
 
-  const handleSelectTrip = async (tripId) => {
-    setSelectedTripId(tripId);
-    setSelectedTrip(tripId); 
-    await fetchItineraries(tripId); 
+  const handleSelectTrip = async (trip) => {
+    setSelectedTripState(trip);
+    setSelectedTrip(trip); 
+    await fetchItineraries(trip.id);
   };
 
   const handleDeleteTrip = async (tripId) => {
     try {
       await deleteTrip(tripId);
       messageApi.success("여행 및 일정이 삭제되었습니다.");
+      await fetchTrips(); 
 
-      if (selectedTripId === tripId) {
-        setSelectedTripId(null);
-        fetchItineraries([]);
+      if (selectedTrip?.id === tripId) {
+        setSelectedTripState(null);
       }
     } catch (error) {
       messageApi.error("삭제 중 오류가 발생했습니다.");
     }
+  };
+
+  const handleEditTrip = (trip) => {
+    setEditingTrip(trip);
+    setIsEditTripModalOpen(true);
+  };
+
+  const handleEditClick = (itinerary) => {
+    setEditingItinerary(itinerary);
+    setIsEditModalOpen(true);
   };
 
   return (
@@ -55,15 +75,18 @@ const Sidebar = ({ setSelectedTrip }) => {
         dataSource={trips}
         renderItem={(trip) => (
           <List.Item
-            onClick={() => handleSelectTrip(trip.id)} 
+            onClick={() => handleSelectTrip(trip)} 
             style={{
               cursor: "pointer",
-              background: selectedTripId === trip.id ? "#e6f7ff" : "white",
+              background: selectedTrip?.id === trip.id ? "#e6f7ff" : "white",
               borderRadius: "5px",
               padding: "10px",
               marginBottom: "5px",
             }}
             actions={[
+              <Button size="small" onClick={() => handleEditTrip(trip)}>
+                Edit
+              </Button>,
               <Popconfirm
                 title="여행 삭제"
                 description="이 여행과 관련된 일정이 모두 삭제됩니다. 계속하시겠습니까?"
@@ -80,15 +103,26 @@ const Sidebar = ({ setSelectedTrip }) => {
           </List.Item>
         )}
       />
+
       <AddTripForm 
         visible={isTripModalOpen} 
         onClose={() => setIsTripModalOpen(false)}
-        addTrip={(trip) => {
-          addTrip(trip);
-          fetchTrips();
+        addTrip={async (trip) => {
+          await addTrip(trip);
+          await fetchTrips();
         }}
       />
 
+      <EditTripForm
+        visible={isEditTripModalOpen}
+        onClose={() => setIsEditTripModalOpen(false)} 
+        trip={editingTrip} 
+        setTrip={async (updatedTrip) => {
+          await updateTrip(updatedTrip);
+          await fetchTrips(); 
+        }}
+      />
+      
       <Divider />
       <h3>📅 여행일정</h3>    
       <>
@@ -96,7 +130,7 @@ const Sidebar = ({ setSelectedTrip }) => {
       <Button
         type="primary"
         onClick={() => {
-          if (!selectedTripId) {
+          if (!selectedTrip) {
             messageApi.warning("여행을 선택해주세요.");
             return;
           }
@@ -119,11 +153,14 @@ const Sidebar = ({ setSelectedTrip }) => {
               >
               📍 구글맵 위치 보기
               </Button>,
+              <Button size="small" onClick={() => handleEditClick(itinerary)}>
+                Edit
+              </Button>,
               <Button 
                 danger size="small"
                 onClick={async () => {
-                  await deleteItinerary(itinerary.id, selectedTripId);
-                  await fetchItineraries(selectedTripId);
+                  await deleteItinerary(itinerary.id, selectedTrip.id);
+                  await fetchItineraries(selectedTrip.id);
                 }}>
                 Delete
               </Button>,
@@ -137,10 +174,19 @@ const Sidebar = ({ setSelectedTrip }) => {
         visible={isItineraryModalOpen}
         onClose={() => setIsItineraryModalOpen(false)}
         addItinerary={async (itinerary) => {
-          await addItinerary(itinerary, selectedTripId);
-          await fetchItineraries(selectedTripId);
+          await addItinerary(itinerary);
+          await fetchItineraries(selectedTrip.id);
         }}
-        tripId={selectedTripId}
+        tripId={selectedTrip?.id}
+      />
+      <EditItineraryForm
+        visible={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        itinerary={editingItinerary}
+        updateItinerary={async (updatedItinerary) => {
+          await updateItinerary(updatedItinerary);
+          await fetchItineraries(selectedTrip.id);
+        }}
       />
     </div>
   );

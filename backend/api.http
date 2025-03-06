@@ -23,13 +23,88 @@ Content-Type: image/tiff
 < d:\sample_pages_5.tiff
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
-### 일정
+### 여행 목록
 GET http://localhost:8081/api/trip
 
-### 일정
+### 여행 선택
+GET http://localhost:8081/api/trip/5
+
+### 여행 생성
+POST http://localhost:8081/api/trip HTTP/1.1
+content-type: application/json
+
+{
+    "tripName": "여행이름",
+    "destination": "여행지",
+    "startDate": "2025-03-06",
+    "endDate": "2025-03-06",
+    "notes": "메모"
+}
+
+### 여행 수정
+PUT  http://localhost:8081/api/trip HTTP/1.1
+content-type: application/json
+
+{
+    "id": 4,
+    "tripName": "여행이름",
+    "destination": "일본입니다",
+    "startDate": null,
+    "endDate": null,
+    "notes": "우헤헤헤"
+}
+
+### 여행 삭제
+DELETE http://localhost:8081/api/trip/5 HTTP/1.1
+content-type: application/json
+
+{
+}
+
+
+### 일정 목록
+GET http://localhost:8081/api/itinerary/trip/3
+
+### 일정 선택
 GET http://localhost:8081/api/itinerary/1
 
+### 일정 생성
+POST http://localhost:8081/api/itinerary HTTP/1.1
+content-type: application/json
 
+{
+    "tripId": 3,
+    "dayNumber": 1,
+    "title": "테스트1",
+    "description": "디스크립션션",
+    "timeSlot": "11:11:00",
+    "location": null,
+    "latitude": null,
+    "longitude": null
+}
+
+### 일정 수정
+PUT  http://localhost:8081/api/itinerary HTTP/1.1
+content-type: application/json
+
+{
+    "id": 1,
+    "tripId": 3,
+    "dayNumber": 1,
+    "title": "공항출발11111",
+    "description": "체크인하기1111",
+    "timeSlot": "02:11:00",
+    "location": "인천국제공항, 272, 공항로, 운서동, 중구, 22379, 대한민국",
+    "latitude": null,
+    "longitude": null
+}
+
+### 일정 삭제
+DELETE http://localhost:8081/api/itinerary/3 HTTP/1.1
+content-type: application/json
+
+{
+}
 
 
 ### 할일 목록
@@ -73,4 +148,4 @@ content-type: application/json
 
 ### 외부 API
 ### 환욜
-GET https://m.search.naver.com/p/csearch/content/qapirender.nhn?key=calculator&pkid=141&q=%ED%99%98%EC%9C%A8&where=m&u1=keb&u6=standardUnit&u7=0&u3=JPY&u4=KRW&u8=down&u2=1
+GET https://m.search.naver.com/p/csearch/content/qapirender.nhn?key=calculator&pkid=141&q=%ED%99%98%EC%9C%A8&where=m&u1=keb&u6=standardUnit&u7=0&u3=USD&u4=KRW&u8=down&u2=1

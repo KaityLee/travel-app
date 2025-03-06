@@ -8,6 +8,8 @@ const AddTripForm = ({ visible, onClose, addTrip }) => {
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
+      console.log("values:", values);
+
       await addTrip({
         tripName: values.trip_name,
         destination: values.destination,
@@ -19,26 +21,26 @@ const AddTripForm = ({ visible, onClose, addTrip }) => {
       form.resetFields();
       onClose();
     } catch (error) {
-      console.error("Validation Failed:", error);
+      console.error("입력 검증 실패:", error);
     }
   };
 
   return (
-    <Modal title="Add Travel Plan" open={visible} onCancel={onClose} footer={null}>
+    <Modal title="✈️ 여행 추가" open={visible} onCancel={onClose} footer={null}>
       <Form form={form} layout="vertical">
-        <Form.Item name="trip_name" label="Trip Name" rules={[{ required: true }]}>
-          <Input placeholder="Enter trip name" />
+        <Form.Item name="trip_name" label="여행 이름" rules={[{ required: true, message: "이름을 입력하세요!" }]}>
+          <Input placeholder="여행 이름 입력" />
         </Form.Item>
-        <Form.Item name="destination" label="Destination" rules={[{ required: true }]}>
-          <Input placeholder="Enter destination" />
+        <Form.Item name="destination" label="목적지" rules={[{ required: true, message: "여행지를 입력하세요!" }]}>
+          <Input placeholder="여행 지역 입력" />
         </Form.Item>
         <Form.Item name="dates" label="Travel Dates" rules={[{ required: true }]}>
           <DatePicker.RangePicker />
         </Form.Item>
-        <Form.Item name="notes" label="Notes">
-          <Input.TextArea placeholder="Any additional notes?" />
+        <Form.Item name="notes" label="메모">
+            <Input.TextArea placeholder="추가로 기록할 것이 있나요?" />
         </Form.Item>
-        <Button type="primary" onClick={handleSubmit}>
+        <Button type="primary" onClick={handleSubmit} style={{ width: "100%" }}>
           Add Trip
         </Button>
       </Form>

@@ -5,14 +5,14 @@ import AddTaskForm from "./AddTaskForm";
 import ViewTaskModal from "./ViewTaskModal";
 import dayjs from "dayjs";
 
-const TaskList = ({isTaskModalOpen, setIsTaskModalOpen }) => {
-  const { tasks, fetchTasks, deleteTask, updateTask } = useTasks();
+const TaskList = ({isTaskModalOpen, setIsTaskModalOpen, fetchTasks }) => {
+  const { tasks,  deleteTask, updateTask } = useTasks();
   const [selectedTask, setSelectedTask] = useState(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
   useEffect(() => {
     fetchTasks();
-  }, []);
+  }, [fetchTasks]);
 
   const handleStatusChange = (task, newStatus) => {
     const updatedTask = updateTask({ ...task, status: newStatus });

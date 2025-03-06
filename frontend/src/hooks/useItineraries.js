@@ -45,6 +45,16 @@ const useItineraries = () => {
     }
   };
 
+  
+  const updateItinerary = async (updatedItinerary) => {
+    try {
+      await axios.put(`${API_BASE_URL}/itinerary`, updatedItinerary);
+      await fetchItineraries();
+    } catch (error) {
+      console.error("Error updating trip:", error);
+    }
+  };
+
   const deleteItinerary = async (id, tripId) => {
     if (!tripId) return;
     try {
@@ -55,7 +65,7 @@ const useItineraries = () => {
     }
   };
 
-  return { itineraries, fetchItineraries, addItinerary, deleteItinerary };
+  return { itineraries, fetchItineraries, addItinerary, updateItinerary, deleteItinerary };
 };
 
 export default useItineraries;

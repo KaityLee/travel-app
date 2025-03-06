@@ -15,14 +15,23 @@ const useTasks = () => {
     }
   };
 
-  const addTask = async (newTask) => {
+  const addTask = async (newTasks) => {
     try {
-      await axios.post(`${API_BASE_URL}/task`, newTask);
-      fetchTasks();
+      if (Array.isArray(newTasks)) {
+        await Promise.all(
+          newTasks.map((task) =>
+            axios.post(`${API_BASE_URL}/task`, task)
+          )
+        );
+      } else {
+        await axios.post(`${API_BASE_URL}/task`, newTasks);
+      }
+      await fetchTasks(); 
     } catch (error) {
       console.error("Error adding task:", error);
     }
   };
+
 
   const updateTask = async (updatedTask) => {
     if (!updatedTask.id) {

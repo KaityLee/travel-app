@@ -4,13 +4,13 @@ import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import useTasks from "../hooks/useTasks";
 
-const ChatWithLLMModal = ({ isOpen, onClose }) => {
+const ChatWithLLMModal = ({ isOpen, onClose, onAddTodo }) => {
   const [userInput, setUserInput] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
   const [suggestedTasks, setSuggestedTasks] = useState([]); 
   const [selectedTasks, setSelectedTasks] = useState([]); 
   const chatEndRef = useRef(null);
-  const { tasks, addTask } = useTasks();
+  const { tasks, addTask, fetchTasks } = useTasks();
 
   useEffect(() => {
     if (chatEndRef.current) {
@@ -76,10 +76,20 @@ const ChatWithLLMModal = ({ isOpen, onClose }) => {
       message.warning("추가할 항목을 선택하세요.");
       return;
     }
-    await addTask(selectedTasks); 
+
+    const tasksToAdd = selectedTasks.map((task) => ({
+      title: task,
+      description: "",
+      dueDate: null, 
+      status: "pending",
+      priority: "medium",
+    }));
+
+    await addTask(tasksToAdd); 
     message.success("성공적으로 추가되었습니다.");
     setSelectedTasks([]); 
-    setSuggestedTasks([]); 
+    // setSuggestedTasks([]); 
+    onAddTodo(); 
     onClose(); 
   };
 
@@ -89,6 +99,7 @@ const ChatWithLLMModal = ({ isOpen, onClose }) => {
       handleSendMessage();
     }
   };
+  
 
   return (
     <Modal

@@ -16,7 +16,7 @@
 
     <select id="getTripById" parameterType="long" resultType="com.kaity.travel.backend.domain.todo.entity.Trip">
         SELECT   id
-                ,trip_name
+                ,tripName
                 ,destination
                 ,startDate
                 ,endDate
@@ -45,11 +45,13 @@
 
     <update id="updateTrip" parameterType="com.kaity.travel.backend.domain.todo.entity.Trip">
         UPDATE trip 
-        SET    tripName      =    #{tripName}
-              ,destination    =    #{destination}
-              ,startDate     =    #{startDate}
-              ,endDate       =    #{endDate}
-              ,notes          =    #{notes}
+        <set>
+            <if test="tripName != null">    tripName        =    #{tripName}</if>
+            <if test="destination != null"> ,destination =    #{destination}</if>
+            <if test="startDate != null">   ,startDate     =    #{startDate}</if>
+            <if test="endDate != null">     ,endDate         =    #{endDate}</if>
+            <if test="notes != null">       ,notes             =    #{notes}</if>
+        </set>
         WHERE id = #{id}
     </update>
 

@@ -24,9 +24,18 @@ const useTrips = () => {
   const addTrip = async (newTrip) => {
     try {
       await axios.post(`${API_BASE_URL}/trip`, newTrip);
-      await fetchTrips(); //
+      await fetchTrips(); 
     } catch (error) {
       console.error("Error adding trip:", error);
+    }
+  };
+
+  const updateTrip = async (updatedTrip) => {
+    try {
+      await axios.put(`${API_BASE_URL}/trip`, updatedTrip);
+      await fetchTrips();
+    } catch (error) {
+      console.error("Error updating trip:", error);
     }
   };
 
@@ -39,7 +48,7 @@ const useTrips = () => {
     }
   };
 
-  return { trips, fetchTrips, addTrip, deleteTrip };
+  return { trips, fetchTrips, addTrip, updateTrip, deleteTrip };
 };
 
 export default useTrips;
