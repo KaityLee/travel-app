@@ -16,8 +16,12 @@ import com.kaity.travel.backend.common.utils.ApiResponseUtils;
 import com.kaity.travel.backend.domain.todo.entity.Trip;
 import com.kaity.travel.backend.domain.todo.interfaces.TripService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/trip")
+@Tag(name = "Trip", description = "여행 API")
 public class TripApiController {
     private final TripService tripService;
 
@@ -26,6 +30,7 @@ public class TripApiController {
     }
 
     @GetMapping
+    @Operation(summary = "여행 목록 조회", description = "여행 목록을 조회합니다.")
     public Map<String, Object> getAllTrips() {
         try {
             List<Trip> results = tripService.getAllTrips();
@@ -36,6 +41,7 @@ public class TripApiController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "여행 상세 조회", description = "여행 상세 정보를 조회합니다.")
     public Map<String, Object> getTripById(@PathVariable Long id) {
         try {
             Trip result = tripService.getTripById(id);
@@ -46,6 +52,7 @@ public class TripApiController {
     }
 
     @PostMapping
+    @Operation(summary = "여행 생성", description = "여행을 생성합니다.")
     public Map<String, Object> createTrip(@RequestBody Trip trip) {
         try {
             tripService.createTrip(trip);
@@ -56,6 +63,7 @@ public class TripApiController {
     }
 
     @PutMapping
+    @Operation(summary = "여행 수정", description = "여행을 수정합니다.")
     public Map<String, Object> updateTrip(@RequestBody Trip trip) {
         try {
             tripService.updateTrip(trip);
@@ -66,6 +74,7 @@ public class TripApiController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "여행 삭제", description = "여행을 삭제합니다.")
     public Map<String, Object> deleteTrip(@PathVariable Long id) {
         try {
             tripService.deleteTrip(id);

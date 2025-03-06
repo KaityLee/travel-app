@@ -4,6 +4,9 @@ import com.kaity.travel.backend.common.utils.ApiResponseUtils;
 import com.kaity.travel.backend.domain.todo.entity.Task;
 import com.kaity.travel.backend.domain.todo.interfaces.TaskService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,6 +14,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/task")
+@Tag(name = "Task", description = "할일 API")
 public class TaskApiController {
     private final TaskService taskService;
 
@@ -19,6 +23,7 @@ public class TaskApiController {
     }
 
     @GetMapping
+    @Operation(summary = "할일 목록 조회", description = "할일 목록을 조회합니다.")
     public Map<String,Object> getAllTasks() {
         try {
             List<Task> results = taskService.getAllTasks();
@@ -29,6 +34,7 @@ public class TaskApiController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "할일 상세 조회", description = "할일 상세 정보를 조회합니다.")
     public Map<String,Object> getTaskById(@PathVariable Long id) {
         try {
             Task results = taskService.getTaskById(id);
@@ -39,6 +45,7 @@ public class TaskApiController {
     }
 
     @PostMapping
+    @Operation(summary = "할일 생성", description = "할일을 생성합니다.")
     public Map<String,Object> createTask(@RequestBody Task task) {
         try {
             taskService.createTask(task);
@@ -49,6 +56,7 @@ public class TaskApiController {
     }
 
     @PutMapping
+    @Operation(summary = "할일 수정", description = "할일을 수정합니다.")
     public Map<String,Object> updateTask(@RequestBody Task task) {
         try {
             taskService.updateTask(task);
@@ -59,6 +67,7 @@ public class TaskApiController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "할일 삭제", description = "할일을 삭제합니다.")
     public Map<String,Object> deleteTask(@PathVariable Long id) {
         try {
             taskService.deleteTask(id);
