@@ -28,11 +28,11 @@ const CurrencySelector = () => {
   const [currencyRate, setCurrencyRate] = useState("Loading...");
   const [krwRate, setKrwRate] = useState("Loading...");
   const [previousKrwRate, setPreviousKrwRate] = useState(null);
-  const [selectedCurrency, setSelectedCurrency] = useState("JPY");
+  const [selectedCurrency, setSelectedCurrency] = useState("USD");
 
   const availableCurrencies = [
-    { code: "JPY", name: "🇯🇵 엔" },
     { code: "USD", name: "🇺🇸 달러" },
+    { code: "JPY", name: "🇯🇵 엔" },
     { code: "EUR", name: "🇪🇺 유로" },
     { code: "CNY", name: "🇨🇳 위안" },
     { code: "GBP", name: "🇬🇧 파운드" },

@@ -22,8 +22,7 @@ const App = () => {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  const handleAddTodo = async (newTodos) => {
-    // setTaskList([...taskList, ...newTodos]); 
+  const handleAddTodo = async () => {
     await fetchTasks();
   };
 
@@ -101,7 +100,7 @@ const App = () => {
             top: "90%",
             right: "50%",
           }}
-          onClick={() => setIsTaskListOpen(true)} // ✅ Open Task List Drawer
+          onClick={() => setIsTaskListOpen(true)} 
         />
       )}
 
@@ -114,25 +113,17 @@ const App = () => {
         open={isTaskListOpen} 
         height={500} 
         extra={ 
+          <>
+          <Button type="primary" onClick={() => setIsChatModalOpen(true)} style={{ marginRight: "10px" }}>
+            + AI 추천 받기
+          </Button>
           <Button type="primary" onClick={() => setIsTaskModalOpen(true)}>
             + 할 일 추가
           </Button>
+          </>
         }
       >
-        <FloatButton
-          icon={<OpenAIOutlined />}
-          tooltip={<div>🤖AI와 대화하기</div>}
-          style={{
-            transition: "right 0.3s ease",
-            right: isSidebarOpen ? "460px" : "30px",
-          }}
-          onClick={() => setIsChatModalOpen(true)} 
-        />
-        <ChatWithLLMModal
-          isOpen={isChatModalOpen}
-          onClose={() => setIsChatModalOpen(false)}
-          onAddTodo={handleAddTodo}
-        />
+
         <TaskList 
           isTaskModalOpen={isTaskModalOpen}
           setIsTaskModalOpen={setIsTaskModalOpen} 
@@ -148,10 +139,16 @@ const App = () => {
         style={{
           transition: "right 0.3s ease",
           right: isSidebarOpen ? "460px" : "30px",
+          display: isTaskListOpen ? "none" : "block",
         }}
         onClick={() => setIsChatModalOpen(true)} 
       />
 
+      <ChatWithLLMModal
+        isOpen={isChatModalOpen}
+        onClose={() => setIsChatModalOpen(false)}
+        onAddTodo={handleAddTodo}
+      />
 
     </div>
     </Content>

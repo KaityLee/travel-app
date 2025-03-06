@@ -85,12 +85,17 @@ const ChatWithLLMModal = ({ isOpen, onClose, onAddTodo }) => {
       priority: "medium",
     }));
 
-    await addTask(tasksToAdd); 
-    message.success("성공적으로 추가되었습니다.");
-    setSelectedTasks([]); 
-    // setSuggestedTasks([]); 
-    onAddTodo(); 
-    onClose(); 
+    try {
+      await addTask(tasksToAdd); 
+      await fetchTasks();
+      message.success("성공적으로 추가되었습니다.");
+      setSelectedTasks([]); 
+      // setSuggestedTasks([]); 
+      // onAddTodo(); 
+      onClose(); 
+    } catch (error) {
+      message.error("할 일 추가 중 오류 발생");
+    }
   };
 
   const handleKeyDown = (e) => {

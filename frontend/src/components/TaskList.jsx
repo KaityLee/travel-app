@@ -12,7 +12,7 @@ const TaskList = ({isTaskModalOpen, setIsTaskModalOpen, fetchTasks }) => {
 
   useEffect(() => {
     fetchTasks();
-  }, [fetchTasks]);
+  }, []);
 
   const handleStatusChange = (task, newStatus) => {
     const updatedTask = updateTask({ ...task, status: newStatus });
@@ -20,10 +20,9 @@ const TaskList = ({isTaskModalOpen, setIsTaskModalOpen, fetchTasks }) => {
     setSelectedTask(updatedTask); 
   };
 
-  const handleTaskUpdate = (updatedTask) => {
-    // ✅ Update selectedTask (for modal) and refresh the full task list
+  const handleTaskUpdate = async (updatedTask) => {
     setSelectedTask(updatedTask);
-    fetchTasks(); // ✅ Ensure Task List updates
+    await fetchTasks(); 
   };
 
 
