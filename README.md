@@ -1,4 +1,4 @@
-# 📌 To-Do & Calendar App
+# 📌 Travel App (To-Do & Calendar)
 
 ## 1. 프로젝트 소개
 이 프로젝트는 React와 Spring Boot를 사용하여 만든 **할 일(To-Do) & 일정(Calendar) 관리 웹 애플리케이션**입니다.  
