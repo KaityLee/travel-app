@@ -30,12 +30,47 @@ GET http://localhost:8081/api/trip
 GET http://localhost:8081/api/itinerary/1
 
 
-### 일정
+
+
+### 할일 목록
 GET http://localhost:8081/api/task
+
+### 할일 선택
+GET http://localhost:8081/api/task/9
+
+### 할일 생성
+POST http://localhost:8081/api/task HTTP/1.1
+content-type: application/json
+
+{
+    "title": "할일",
+    "description": "할일 내용",
+    "dueDate": null,
+    "status": null,
+    "priority": null
+}
+
+### 할일 수정
+PUT  http://localhost:8081/api/task HTTP/1.1
+content-type: application/json
+
+{
+    "id": 9,
+    "title": "하아아아알일",
+    "description": null,
+    "dueDate": "2025-03-06T00:00:00",
+    "status": null,
+    "priority": null
+}
+
+### 할일 삭제
+DELETE http://localhost:8081/api/task/17 HTTP/1.1
+content-type: application/json
+
+{
+}
+
 
 ### 외부 API
 ### 환욜
 GET https://m.search.naver.com/p/csearch/content/qapirender.nhn?key=calculator&pkid=141&q=%ED%99%98%EC%9C%A8&where=m&u1=keb&u6=standardUnit&u7=0&u3=JPY&u4=KRW&u8=down&u2=1
-
-### 환욜
-GET https://www.koreaexim.go.kr/ir/HPHKIR020M01?apino=2&viewtype=C&searchselect=&searchword=&page=1

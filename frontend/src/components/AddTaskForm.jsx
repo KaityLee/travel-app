@@ -2,7 +2,7 @@ import React from "react";
 import { Modal, Form, Input, DatePicker, Button, Select } from "antd";
 import useTasks from "../hooks/useTasks";
 
-const AddTaskForm = ({ visible, onClose }) => {
+const AddTaskForm = ({ visible, onClose, fetchTasks  }) => {
   const { addTask } = useTasks();
   const [form] = Form.useForm();
 
@@ -12,12 +12,13 @@ const AddTaskForm = ({ visible, onClose }) => {
       await addTask({
         title: values.title,
         description: values.description || "",
-        dueDate: values.due_date ? values.due_date.format("YYYY-MM-DD HH:mm:ss") : null,
+        dueDate: values.due_date ? values.due_date.format("YYYY-MM-DDTHH:mm:ss") : null,
         status: values.status? values.status : "pending",
         priority: values.priority? values.priority : "medium",
       });
       form.resetFields();
       onClose();
+      await fetchTasks();      
     } catch (error) {
       console.error("Validation Failed:", error);
     }

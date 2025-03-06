@@ -27,13 +27,14 @@ const App = () => {
   return (
     <Layout>
       <Header style={{ display: 'flex', alignItems: 'center' }}>
-        <div className="demo-logo" />
+        <div style={{ color: "white", fontWeight: "bold", fontSize: "18px", marginRight: "20px" }}>
+          Travel App
+        </div>
         <Menu
           theme="dark"
           mode="horizontal"          
           style={{ flex: 1, minWidth: 0 }}
         >
-          <b>Travel App</b>
         </Menu>
       </Header>
       <Content>

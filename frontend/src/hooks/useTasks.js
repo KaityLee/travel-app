@@ -15,57 +15,31 @@ const useTasks = () => {
     }
   };
 
-  const addTask = async (newTasks) => {
+  const addTask = async (newTask) => {
     try {
-      if (Array.isArray(newTasks)) {
-        await Promise.all(
-          newTasks.map((task) =>
-            axios.post(`${API_BASE_URL}/task`, {
-              title: task,
-              description: "",
-              dueDate: null, 
-              status: "pending",
-              priority: "medium",
-            })
-          )
-        );
-      } else {
-        await axios.post(`${API_BASE_URL}/task`, newTasks);
-      }
-      fetchTasks(); 
+      await axios.post(`${API_BASE_URL}/task`, newTask);
+      fetchTasks();
     } catch (error) {
       console.error("Error adding task:", error);
     }
   };
 
-  const updateTask = async (id, updatedFields) => {
-    if (!id) {
+  const updateTask = async (updatedTask) => {
+    if (!updatedTask.id) {
       console.error("Error: Cannot update task without an ID!");
       return;
     }
-  
+
     try {
-      console.log("Updating Task with ID:", id); // ✅ Debugging
-      console.log("Updated Fields:", updatedFields); // ✅ Debugging
-  
-      await axios.patch(`${API_BASE_URL}/task/${id}`, updatedFields);
+      console.log("updatedTask dueDate:", updatedTask.dueDate);
+
+      await axios.put(`${API_BASE_URL}/task`, updatedTask);
       fetchTasks();
     } catch (error) {
       console.error("Error updating task:", error);
     }
   };
-  
-  const updateStatusTask = async (id, updatedStatus) => {
-    try {
-      await axios.patch(`${API_BASE_URL}/task/${id}`, {
-        status: updatedStatus,
-      });
-      fetchTasks();
-    } catch (error) {
-      console.error("Error updating task:", error);
-    }
-  };
-  
+    
   const deleteTask = async (id) => {
     try {
       await axios.delete(`${API_BASE_URL}/task/${id}`);
@@ -79,7 +53,7 @@ const useTasks = () => {
     fetchTasks();
   }, []);
 
-  return { tasks, fetchTasks, addTask, updateTask, updateStatusTask, deleteTask };
+  return { tasks, fetchTasks, addTask, updateTask, deleteTask };
 };
 
 export default useTasks;

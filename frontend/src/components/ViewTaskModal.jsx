@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Modal, Descriptions, Button } from "antd";
 import EditTaskForm from "./EditTaskForm";
+import dayjs from "dayjs";
 
-const ViewTaskModal = ({ visible, onClose, task }) => {
+const ViewTaskModal = ({ visible, onClose, task, setTask }) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   if (!task) return null;
@@ -40,7 +41,7 @@ const ViewTaskModal = ({ visible, onClose, task }) => {
         open={visible}
         onCancel={onClose}
         footer={[
-          <Button key="edit" type="primary" onClick={() => setIsEditModalOpen(task)}>
+          <Button key="edit" type="primary" onClick={() => setIsEditModalOpen(true)}>
             ✏️ 수정
           </Button>,
           <Button key="close" onClick={onClose}>
@@ -51,7 +52,9 @@ const ViewTaskModal = ({ visible, onClose, task }) => {
         <Descriptions bordered column={1}>
           <Descriptions.Item label="제목">{task.title}</Descriptions.Item>
           <Descriptions.Item label="설명">{task.description || "-"}</Descriptions.Item>
-          <Descriptions.Item label="마감 기한">{task.due_date || "-"}</Descriptions.Item>
+          <Descriptions.Item label="마감 기한">
+            {task.dueDate ? dayjs(task.dueDate).format("YYYY-MM-DD HH:mm:ss") : "없음"}
+          </Descriptions.Item>
           <Descriptions.Item label="진행 상태">{getKoreanStatus(task.status)}</Descriptions.Item>
           <Descriptions.Item label="우선 순위">{getKoreanPriority(task.priority)}</Descriptions.Item>
         </Descriptions>
@@ -60,8 +63,9 @@ const ViewTaskModal = ({ visible, onClose, task }) => {
       {/* ✅ Edit Modal */}
       <EditTaskForm
         visible={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(true)}
+        onClose={() => setIsEditModalOpen(false)}
         task={task}
+        setTask={setTask}
       />
     </>
   );

@@ -3,7 +3,7 @@ import { Modal, Form, Input, DatePicker, Button, Select, message } from "antd";
 import useTasks from "../hooks/useTasks";
 import dayjs from "dayjs";
 
-const EditTaskForm = ({ visible, onClose, task }) => {
+const EditTaskForm = ({ visible, onClose, task, setTask }) => {
   const { updateTask, fetchTasks } = useTasks();
   const [form] = Form.useForm();
 
@@ -23,23 +23,32 @@ const EditTaskForm = ({ visible, onClose, task }) => {
   const handleUpdate = async () => {
     try {
       const values = await form.validateFields();
-        console.log("Updating Task ID:", task?.id); // ✅ Debugging
 
       if (!task?.id) {
         console.error("Error: Task ID is missing!");
         return;
       }
-      await updateTask(task?.id, {
+
+      const updatedTask = {
+        id: task.id,
         title: values.title,
         description: values.description || "",
-        dueDate: values.due_date ? values.due_date.format("YYYY-MM-DD'T'HH:mm:ss") : null,
+        dueDate: values.due_date ? values.due_date.format("YYYY-MM-DDTHH:mm:ss") : null,
         status: values.status,
         priority: values.priority,
-      });
+      };
+
+      await updateTask(updatedTask);
+      
+      setTask(updatedTask);
+
+      await fetchTasks();
+      message.success("✅ 할 일이 성공적으로 수정되었습니다!");
       form.resetFields();
       onClose();
     } catch (error) {
       console.error("Task update failed:", error);
+      message.error("🚨 할 일 수정 실패!");
     }
   };
 
@@ -55,14 +64,14 @@ const EditTaskForm = ({ visible, onClose, task }) => {
         <Form.Item name="due_date" label="마감 기한">
           <DatePicker showTime />
         </Form.Item>
-        <Form.Item name="status" label="진행 상태" rules={[{ required: true }]}>
+        <Form.Item name="status" label="진행 상태" >
           <Select>
             <Select.Option value="pending">🟡 대기 중</Select.Option>
             <Select.Option value="in-progress">🟢 진행 중</Select.Option>
             <Select.Option value="completed">🔵 완료</Select.Option>
           </Select>
         </Form.Item>
-        <Form.Item name="priority" label="우선 순위" rules={[{ required: true }]}>
+        <Form.Item name="priority" label="우선 순위" >
           <Select>
             <Select.Option value="low">🟢 낮음</Select.Option>
             <Select.Option value="medium">🟡 보통</Select.Option>

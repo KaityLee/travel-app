@@ -1,24 +1,34 @@
 import React, { useState, useEffect } from "react";
-import { List, Button, Divider, Tag, Select } from "antd";
+import { List, Button, Tag, Select } from "antd";
 import useTasks from "../hooks/useTasks";
 import AddTaskForm from "./AddTaskForm";
 import ViewTaskModal from "./ViewTaskModal";
+import dayjs from "dayjs";
 
 const TaskList = ({isTaskModalOpen, setIsTaskModalOpen }) => {
-  const { tasks, fetchTasks, deleteTask, updateStatusTask } = useTasks();
-  // const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+  const { tasks, fetchTasks, deleteTask, updateTask } = useTasks();
   const [selectedTask, setSelectedTask] = useState(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
   useEffect(() => {
-    fetchTasks(); // ✅ Fetch tasks when the component loads
+    fetchTasks();
   }, []);
+
+  const handleStatusChange = (task, newStatus) => {
+    const updatedTask = updateTask({ ...task, status: newStatus });
+    updateTask(updatedTask);
+    setSelectedTask(updatedTask); 
+  };
+
+  const handleTaskUpdate = (updatedTask) => {
+    // ✅ Update selectedTask (for modal) and refresh the full task list
+    setSelectedTask(updatedTask);
+    fetchTasks(); // ✅ Ensure Task List updates
+  };
+
 
   return (
     <div style={{ padding : "0 20px 50px 20px" }}>
-      
-
-      {/* ✅ Task List */}
       <List
         dataSource={tasks}
         renderItem={(task) => (
@@ -28,9 +38,12 @@ const TaskList = ({isTaskModalOpen, setIsTaskModalOpen }) => {
               setIsViewModalOpen(true);
             }}
             actions={[
+              <span style={{ fontSize: "12px", color: "#888", paddingRight: "20px" }}>
+              {task.dueDate ? dayjs(task.dueDate).format("YYYY-MM-DD HH:mm:ss") : "없음"}
+              </span>,
               <Button danger
-               size="small"
-               onClick={(e) =>{
+                size="small"
+                onClick={(e) =>{
                 e.stopPropagation();
                 deleteTask(task.id)
                 }}
@@ -54,7 +67,7 @@ const TaskList = ({isTaskModalOpen, setIsTaskModalOpen }) => {
               <Select
                 value={task.status}
                 onClick={(e) => e.stopPropagation()}
-                onChange={(newStatus) => updateStatusTask(task.id, newStatus)}
+                onChange={(newStatus) => handleStatusChange(task, newStatus)}
                 size="small"
                 style={{ width: "120px", marginLeft: "10px" }}
               >
@@ -63,7 +76,6 @@ const TaskList = ({isTaskModalOpen, setIsTaskModalOpen }) => {
                 <Select.Option value="completed">🔵 완료</Select.Option>
               </Select>
             </div>
-            <small>마감 기한: {task.due_date || "없음"}</small>
           </List.Item>
         )}
       />
@@ -75,9 +87,12 @@ const TaskList = ({isTaskModalOpen, setIsTaskModalOpen }) => {
           setSelectedTask(null);
         }}
         task={selectedTask}
+        setTask={handleTaskUpdate}
       />
       <AddTaskForm
-       visible={isTaskModalOpen}
+        visible={isTaskModalOpen}
+        setIsTaskModalOpen={setIsTaskModalOpen}
+        fetchTasks={fetchTasks}
         onClose={() => setIsTaskModalOpen(false)}
       />
     </div>

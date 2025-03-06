@@ -27,16 +27,15 @@ const NoticeCalendar = () => {
     padding: "5px",
   };
   
-  // ✅ Function to calculate full itinerary date
   const getFullItineraryDate = (itinerary) => {
     const trip = safeTrips.find((trip) => trip.id === itinerary.tripId);
     if (!trip) return null;
 
-    const tripStartDate = new Date(trip.startDate); // Convert to Date object
+    const tripStartDate = new Date(trip.startDate); 
     const itineraryDate = new Date(tripStartDate);
-    itineraryDate.setDate(tripStartDate.getDate() + (itinerary.dayNumber - 1)); // ✅ Add dayNumber
+    itineraryDate.setDate(tripStartDate.getDate() + (itinerary.dayNumber - 1)); 
 
-    return itineraryDate.toISOString().split("T")[0]; // Return YYYY-MM-DD format
+    return itineraryDate.toISOString().split("T")[0]; 
   };
 
   
@@ -81,12 +80,12 @@ const NoticeCalendar = () => {
           ))}
           {taskEvents.map((task, index) => (
             <p key={`task-${index}`} style={{ fontWeight: "bold" }}>
-              📌 {task.title} ({task.status})
+              📌 {task.title} 
             </p>
           ))}
           {itineraryEvents.map((itinerary, index) => (
             <p key={`itinerary-${index}`}>
-              📍 Day {itinerary.dayNumber}: {itinerary.title} ({itinerary.timeSlot})
+              📍 Day {itinerary.dayNumber}: {itinerary.title}
             </p>
           ))}
         </div>
