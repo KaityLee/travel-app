@@ -27,7 +27,7 @@ CREATE TABLE itinerary (
     description TEXT,
     timeSlot TIME NULL,
     location VARCHAR(255),
-    -- address VARCHAR(255),
+    address VARCHAR(255),
     latitude DECIMAL(9,6),
     longitude DECIMAL(9,6),
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
