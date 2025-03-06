@@ -12,13 +12,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kaity.travel.backend.common.enums.ApiResponseErrorCode;
 import com.kaity.travel.backend.common.utils.ApiResponseUtils;
 import com.kaity.travel.backend.domain.todo.entity.Trip;
 import com.kaity.travel.backend.domain.todo.interfaces.TripService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/trip")
 @Tag(name = "Trip", description = "여행 API")
@@ -36,7 +39,7 @@ public class TripApiController {
             List<Trip> results = tripService.getAllTrips();
             return ApiResponseUtils.createResponse(results);
         } catch (Exception e) {
-            return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage());
+            return ApiResponseUtils.handleException(e);
         }
     }
 
@@ -47,7 +50,8 @@ public class TripApiController {
             Trip result = tripService.getTripById(id);
             return ApiResponseUtils.createResponse(result);
         } catch (Exception e) {
-            return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage());
+            log.error("여행 상세 조회 에러발생  ID: {}", id, e);
+            return ApiResponseUtils.handleException(e);
         }
     }
 
@@ -59,10 +63,11 @@ public class TripApiController {
             if (isCreated) {
                 return ApiResponseUtils.createResponse("여행 생성 완료");
             } else {
-                return ApiResponseUtils.createErrorResponse("여행 생성 실패");
+                return ApiResponseUtils.createErrorResponse(ApiResponseErrorCode.INTERNAL_SERVER_ERROR);
             }
         } catch (Exception e) {
-            return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage());
+            log.error("여행 생성 에러 발생 trip = {}", trip, e);
+            return ApiResponseUtils.handleException(e);
         }
     }
 
@@ -74,10 +79,11 @@ public class TripApiController {
             if (isUpdated) {
                 return ApiResponseUtils.createResponse("여행 수정 완료");
             } else {
-                return ApiResponseUtils.createErrorResponse("여행 수정 실패 (존재하지 않는 여행)");
+                return ApiResponseUtils.createErrorResponse(ApiResponseErrorCode.NOT_FOUND);
             }
         } catch (Exception e) {
-            return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage());
+            log.error("여행 수정 에러발생 trip: {}", trip, e);
+            return ApiResponseUtils.handleException(e);
         }
     }
 
@@ -89,10 +95,11 @@ public class TripApiController {
             if (isDeleted) {
                 return ApiResponseUtils.createResponse("여행 삭제 완료");
             } else {
-                return ApiResponseUtils.createErrorResponse("여행 삭제 실패 (존재하지 않는 여행)");
+                return ApiResponseUtils.createErrorResponse(ApiResponseErrorCode.NOT_FOUND);
             }
         } catch (Exception e) {
-            return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage());
+            log.error("여행 삭제 에러 발생 ID: {}", id, e);
+            return ApiResponseUtils.handleException(e);
         }
     }
 }

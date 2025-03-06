@@ -3,6 +3,11 @@ package com.kaity.travel.backend.common.utils;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.kaity.travel.backend.common.enums.ApiResponseErrorCode;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class ApiResponseUtils {
 
     private static String RESULT_CODE = "200";
@@ -124,6 +129,7 @@ public class ApiResponseUtils {
     }
     
     public static <T> Map<String, Object> createErrorResponse(String code, String message) {
+        log.error("API 에러 - 코드 : {}, 메시지 : {}", code, message);
         Map<String, Object> response = new HashMap<>();
         response.put("success", "N");
         response.put("code", code);
@@ -141,6 +147,10 @@ public class ApiResponseUtils {
         return response;
     }
 
+    public static <T> Map<String, Object> createErrorResponse(ApiResponseErrorCode errorCode) {
+        return createErrorResponse(errorCode.getCode(), errorCode.getMessage());
+    }
+
     public static <T> Map<String, Object> createErrorResponse() {
         Map<String, Object> response = new HashMap<>();
         response.put("success", "N");
@@ -148,5 +158,22 @@ public class ApiResponseUtils {
         response.put("message", ERROR_MESSAGE);
         
         return response;
+    }
+
+    public static Map<String, Object> handleException(Exception e) {
+        log.error("Exception Occurred: {}", e.getMessage(), e);
+
+        if (e instanceof NullPointerException) {
+            return createErrorResponse(ApiResponseErrorCode.INTERNAL_SERVER_ERROR);
+        } else if (e instanceof IllegalArgumentException) {
+            return createErrorResponse(ApiResponseErrorCode.PARAMETER_MISSING);
+        } else {
+            return createErrorResponse(ApiResponseErrorCode.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public static Map<String, Object> handleDatabaseException(Exception e) {
+        log.error("Database Exception: {}", e.getMessage(), e);
+        return createErrorResponse(ApiResponseErrorCode.SERVICE_UNAVAILABLE);
     }
 }

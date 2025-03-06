@@ -1,17 +1,20 @@
 package com.kaity.travel.backend.controller;
 
+import com.kaity.travel.backend.common.enums.ApiResponseErrorCode;
 import com.kaity.travel.backend.common.utils.ApiResponseUtils;
 import com.kaity.travel.backend.domain.todo.entity.Itinerary;
 import com.kaity.travel.backend.domain.todo.interfaces.ItineraryService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/itinerary")
 @Tag(name = "Itinerary", description = "일정 API")
@@ -31,7 +34,8 @@ public class ItineraryApiController {
             List<Itinerary> results = itineraryService.getItineraryByTrip(tripId);
             return ApiResponseUtils.createResponse(results); 
         } catch (Exception e) {
-            return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage()); 
+            log.error("tripId 에러 확인  trip ID = {}", tripId, e);
+            return ApiResponseUtils.handleException(e); 
         }
     }
     
@@ -42,7 +46,8 @@ public class ItineraryApiController {
             Itinerary results = itineraryService.getItineraryById(id);
             return ApiResponseUtils.createResponse(results); 
         } catch (Exception e) {
-            return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage()); 
+            log.error("id 에러 확인  id = {}", id, e);
+            return ApiResponseUtils.handleException(e); 
         }
     }
 
@@ -54,10 +59,11 @@ public class ItineraryApiController {
             if (isCreated) {
                 return ApiResponseUtils.createResponse("일정 생성 완료");
             } else {
-                return ApiResponseUtils.createErrorResponse("일정 생성 실패");
+                return ApiResponseUtils.createErrorResponse(ApiResponseErrorCode.INTERNAL_SERVER_ERROR);
             }
         } catch (Exception e) {
-            return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage());
+            log.error("일정 생성 에러 itinerary : {}", param, e);
+            return ApiResponseUtils.handleException(e); 
         }
     }
     @PutMapping
@@ -68,10 +74,11 @@ public class ItineraryApiController {
             if (isUpdated) {
                 return ApiResponseUtils.createResponse("일정 수정 완료");
             } else {
-                return ApiResponseUtils.createErrorResponse("일정 수정 실패 (존재하지 않는 일정)");
+                return ApiResponseUtils.createErrorResponse(ApiResponseErrorCode.NOT_FOUND);
             }
         } catch (Exception e) {
-            return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage()); 
+            log.error("일정 수정 에러 itinerary : {}", param, e);
+            return ApiResponseUtils.handleException(e); 
         }
     }
 
@@ -83,10 +90,11 @@ public class ItineraryApiController {
             if (isDeleted) {
                 return ApiResponseUtils.createResponse("일정 삭제 완료");
             } else {
-                return ApiResponseUtils.createErrorResponse("일정 삭제 실패 (존재하지 않는 일정)");
+                return ApiResponseUtils.createErrorResponse(ApiResponseErrorCode.NOT_FOUND);
             }
         } catch (Exception e) {
-            return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage());
+            log.error("일정 삭제 에러 id : {}", id, e);
+            return ApiResponseUtils.handleException(e); 
         }
     }
 

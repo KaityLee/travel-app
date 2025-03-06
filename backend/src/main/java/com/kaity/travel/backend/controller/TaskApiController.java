@@ -1,5 +1,6 @@
 package com.kaity.travel.backend.controller;
 
+import com.kaity.travel.backend.common.enums.ApiResponseErrorCode;
 import com.kaity.travel.backend.common.utils.ApiResponseUtils;
 import com.kaity.travel.backend.domain.todo.entity.Task;
 import com.kaity.travel.backend.domain.todo.interfaces.TaskService;
@@ -29,7 +30,7 @@ public class TaskApiController {
             List<Task> results = taskService.getAllTasks();
             return ApiResponseUtils.createResponse(results); 
         } catch (Exception e) {
-            return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage()); 
+            return ApiResponseUtils.handleException(e); 
         }
     }
 
@@ -40,7 +41,7 @@ public class TaskApiController {
             Task results = taskService.getTaskById(id);
             return ApiResponseUtils.createResponse(results); 
         } catch (Exception e) {
-            return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage()); 
+            return ApiResponseUtils.handleException(e);
         }
     }
 
@@ -52,10 +53,10 @@ public class TaskApiController {
             if (isCreated) {
                 return ApiResponseUtils.createResponse("작업 생성 완료");
             } else {
-                return ApiResponseUtils.createErrorResponse("작업 생성 실패");
+                return ApiResponseUtils.createErrorResponse(ApiResponseErrorCode.INTERNAL_SERVER_ERROR);
             }
         } catch (Exception e) {
-            return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage());
+            return ApiResponseUtils.handleException(e);
         }
     }
 
@@ -67,10 +68,10 @@ public class TaskApiController {
             if (isUpdated) {
                 return ApiResponseUtils.createResponse("작업 수정 완료");
             } else {
-                return ApiResponseUtils.createErrorResponse("작업 수정 실패 (존재하지 않는 작업)");
+                return ApiResponseUtils.createErrorResponse(ApiResponseErrorCode.NOT_FOUND);
             }
         } catch (Exception e) {
-            return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage());
+            return ApiResponseUtils.handleException(e);
         }
     }
 
@@ -82,10 +83,10 @@ public class TaskApiController {
             if (isDeleted) {
                 return ApiResponseUtils.createResponse("작업 삭제 완료");
             } else {
-                return ApiResponseUtils.createErrorResponse("작업 삭제 실패 (존재하지 않는 작업)");
+                return ApiResponseUtils.createErrorResponse(ApiResponseErrorCode.NOT_FOUND);
             }
         } catch (Exception e) {
-            return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage());
+            return ApiResponseUtils.handleException(e);
         }
     }
 
