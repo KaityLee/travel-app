@@ -11,8 +11,8 @@ public interface TripMapper {
     
     List<Trip> getAllTrips();
     Trip getTripById(Long id);
-    void createTrip(Trip trip);
-    void updateTrip(Trip trip);
-    void deleteTrip(Long id);
+    int createTrip(Trip trip);
+    int updateTrip(Trip trip);
+    int deleteTrip(Long id);
     
 }

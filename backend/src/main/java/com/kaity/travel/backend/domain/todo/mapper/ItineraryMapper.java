@@ -11,8 +11,8 @@ public interface ItineraryMapper {
     
     List<Itinerary> getItineraryByTrip(Long tripId);
     Itinerary getItineraryById(Long id);
-    void createItinerary(Itinerary itinerary);
-    void updateItinerary(Itinerary itinerary);
-    void deleteItinerary(Long id);
+    int createItinerary(Itinerary itinerary);
+    int updateItinerary(Itinerary itinerary);
+    int deleteItinerary(Long id);
     
 }

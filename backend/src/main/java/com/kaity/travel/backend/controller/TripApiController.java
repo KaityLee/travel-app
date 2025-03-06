@@ -55,8 +55,12 @@ public class TripApiController {
     @Operation(summary = "여행 생성", description = "여행을 생성합니다.")
     public Map<String, Object> createTrip(@RequestBody Trip trip) {
         try {
-            tripService.createTrip(trip);
-            return ApiResponseUtils.createResponse("생성완료");
+            boolean isCreated = tripService.createTrip(trip);
+            if (isCreated) {
+                return ApiResponseUtils.createResponse("여행 생성 완료");
+            } else {
+                return ApiResponseUtils.createErrorResponse("여행 생성 실패");
+            }
         } catch (Exception e) {
             return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage());
         }
@@ -66,8 +70,12 @@ public class TripApiController {
     @Operation(summary = "여행 수정", description = "여행을 수정합니다.")
     public Map<String, Object> updateTrip(@RequestBody Trip trip) {
         try {
-            tripService.updateTrip(trip);
-            return ApiResponseUtils.createResponse("수정완료");
+            boolean isUpdated = tripService.updateTrip(trip);
+            if (isUpdated) {
+                return ApiResponseUtils.createResponse("여행 수정 완료");
+            } else {
+                return ApiResponseUtils.createErrorResponse("여행 수정 실패 (존재하지 않는 여행)");
+            }
         } catch (Exception e) {
             return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage());
         }
@@ -77,8 +85,12 @@ public class TripApiController {
     @Operation(summary = "여행 삭제", description = "여행을 삭제합니다.")
     public Map<String, Object> deleteTrip(@PathVariable Long id) {
         try {
-            tripService.deleteTrip(id);
-            return ApiResponseUtils.createResponse("삭제완료");
+            boolean isDeleted = tripService.deleteTrip(id);
+            if (isDeleted) {
+                return ApiResponseUtils.createResponse("여행 삭제 완료");
+            } else {
+                return ApiResponseUtils.createErrorResponse("여행 삭제 실패 (존재하지 않는 여행)");
+            }
         } catch (Exception e) {
             return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage());
         }

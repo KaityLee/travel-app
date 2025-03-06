@@ -8,8 +8,8 @@ public interface TripService {
     
     List<Trip> getAllTrips();
     Trip getTripById(Long id);
-    void createTrip(Trip trip);
-    void updateTrip(Trip trip);
-    void deleteTrip(Long id);
+    boolean createTrip(Trip trip);
+    boolean updateTrip(Trip trip);
+    boolean deleteTrip(Long id);
     
 }

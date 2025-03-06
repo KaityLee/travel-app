@@ -8,7 +8,7 @@ public interface ItineraryService {
     
     List<Itinerary> getItineraryByTrip(Long tripId);
     Itinerary getItineraryById(Long id);
-    void createItinerary(Itinerary itinerary);
-    void updateItinerary(Itinerary itinerary);
-    void deleteItinerary(Long id);
+    boolean createItinerary(Itinerary itinerary);
+    boolean updateItinerary(Itinerary itinerary);
+    boolean deleteItinerary(Long id);
 }

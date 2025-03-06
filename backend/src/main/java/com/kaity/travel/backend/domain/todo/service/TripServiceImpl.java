@@ -30,20 +30,20 @@ public class TripServiceImpl implements TripService{
 
 
     @Override
-    public void createTrip(Trip trip) {
-        tripMapper.createTrip(trip);
+    public boolean createTrip(Trip trip) {
+        return tripMapper.createTrip(trip) > 0;
     }
 
 
     @Override
-    public void updateTrip(Trip trip) {
-        tripMapper.updateTrip(trip);
+    public boolean updateTrip(Trip trip) {
+        return tripMapper.updateTrip(trip) > 0;
     }
 
 
     @Override
-    public void deleteTrip(Long id) {
-        tripMapper.deleteTrip(id);
+    public boolean deleteTrip(Long id) {
+        return tripMapper.deleteTrip(id) > 0;
     }
 
     

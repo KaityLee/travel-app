@@ -28,18 +28,18 @@ public class ItineraryServiceImpl implements ItineraryService{
     }
 
     @Override
-    public void createItinerary(Itinerary itinerary) {
-        itineraryMapper.createItinerary(itinerary);
+    public boolean createItinerary(Itinerary itinerary) {
+        return itineraryMapper.createItinerary(itinerary) > 0;
     }
 
     @Override
-    public void updateItinerary(Itinerary itinerary) {
-        itineraryMapper.updateItinerary(itinerary);
+    public boolean updateItinerary(Itinerary itinerary) {
+        return itineraryMapper.updateItinerary(itinerary) > 0;
     }
 
     @Override
-    public void deleteItinerary(Long id) {
-        itineraryMapper.deleteItinerary(id);
+    public boolean deleteItinerary(Long id) {
+        return itineraryMapper.deleteItinerary(id) > 0;
     }
 
     

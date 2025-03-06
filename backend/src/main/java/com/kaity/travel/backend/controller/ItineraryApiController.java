@@ -50,18 +50,26 @@ public class ItineraryApiController {
     @Operation(summary = "일정 생성", description = "일정을 생성합니다.")
     public Map<String,Object> createItinerary(@RequestBody Itinerary param) {
         try {
-            itineraryService.createItinerary(param);
-            return ApiResponseUtils.createResponse("생성완료"); 
+            boolean isCreated = itineraryService.createItinerary(param);
+            if (isCreated) {
+                return ApiResponseUtils.createResponse("일정 생성 완료");
+            } else {
+                return ApiResponseUtils.createErrorResponse("일정 생성 실패");
+            }
         } catch (Exception e) {
-            return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage()); 
+            return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage());
         }
     }
     @PutMapping
     @Operation(summary = "일정 수정", description = "일정을 수정합니다.")
     public Map<String,Object> updateItinerary(@RequestBody Itinerary param) {
         try {
-            itineraryService.updateItinerary(param);
-            return ApiResponseUtils.createResponse("수정완료"); 
+            boolean isUpdated = itineraryService.updateItinerary(param);
+            if (isUpdated) {
+                return ApiResponseUtils.createResponse("일정 수정 완료");
+            } else {
+                return ApiResponseUtils.createErrorResponse("일정 수정 실패 (존재하지 않는 일정)");
+            }
         } catch (Exception e) {
             return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage()); 
         }
@@ -71,10 +79,14 @@ public class ItineraryApiController {
     @Operation(summary = "일정 삭제", description = "일정을 삭제합니다.")
     public Map<String,Object> deleteItinerary(@PathVariable Long id) {
         try {
-            itineraryService.deleteItinerary(id);
-            return ApiResponseUtils.createResponse("삭제완료"); 
+            boolean isDeleted = itineraryService.deleteItinerary(id);
+            if (isDeleted) {
+                return ApiResponseUtils.createResponse("일정 삭제 완료");
+            } else {
+                return ApiResponseUtils.createErrorResponse("일정 삭제 실패 (존재하지 않는 일정)");
+            }
         } catch (Exception e) {
-            return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage()); 
+            return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage());
         }
     }
 
