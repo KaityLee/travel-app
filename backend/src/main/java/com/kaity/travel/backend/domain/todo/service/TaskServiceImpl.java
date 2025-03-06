@@ -30,23 +30,23 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void createTask(Task task) {
-        taskMapper.createTask(task);
+    public boolean createTask(Task task) {
+        return taskMapper.createTask(task) > 0;
     }
     
     @Override
-    public void updateTask(Task task) {
-        taskMapper.updateTask(task);
+    public boolean updateTask(Task task) {
+        return taskMapper.updateTask(task) > 0;
     }
 
     // @Override
-    // public void updateTask(Task task) {
+    // public int updateTask(Task task) {
     //     taskMapper.updateTask(task);
     // }
 
     @Override
-    public void deleteTask(Long id) {
-        taskMapper.deleteTask(id);
+    public boolean deleteTask(Long id) {
+        return taskMapper.deleteTask(id) > 0;
     }
     
 }

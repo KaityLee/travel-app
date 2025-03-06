@@ -8,7 +8,7 @@ public interface TaskService {
     
     List<Task> getAllTasks();
     Task getTaskById(Long id);
-    void createTask(Task task);
-    void updateTask(Task task);
-    void deleteTask(Long id);
+    boolean createTask(Task task);
+    boolean updateTask(Task task);
+    boolean deleteTask(Long id);
 }

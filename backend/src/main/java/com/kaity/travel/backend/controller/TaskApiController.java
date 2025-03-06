@@ -48,10 +48,14 @@ public class TaskApiController {
     @Operation(summary = "할일 생성", description = "할일을 생성합니다.")
     public Map<String,Object> createTask(@RequestBody Task task) {
         try {
-            taskService.createTask(task);
-            return ApiResponseUtils.createResponse("생성완료"); 
+            boolean isCreated = taskService.createTask(task);
+            if (isCreated) {
+                return ApiResponseUtils.createResponse("작업 생성 완료");
+            } else {
+                return ApiResponseUtils.createErrorResponse("작업 생성 실패");
+            }
         } catch (Exception e) {
-            return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage()); 
+            return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage());
         }
     }
 
@@ -59,10 +63,14 @@ public class TaskApiController {
     @Operation(summary = "할일 수정", description = "할일을 수정합니다.")
     public Map<String,Object> updateTask(@RequestBody Task task) {
         try {
-            taskService.updateTask(task);
-            return ApiResponseUtils.createResponse("수정완료"); 
+            boolean isUpdated = taskService.updateTask(task);
+            if (isUpdated) {
+                return ApiResponseUtils.createResponse("작업 수정 완료");
+            } else {
+                return ApiResponseUtils.createErrorResponse("작업 수정 실패 (존재하지 않는 작업)");
+            }
         } catch (Exception e) {
-            return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage()); 
+            return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage());
         }
     }
 
@@ -70,10 +78,14 @@ public class TaskApiController {
     @Operation(summary = "할일 삭제", description = "할일을 삭제합니다.")
     public Map<String,Object> deleteTask(@PathVariable Long id) {
         try {
-            taskService.deleteTask(id);
-            return ApiResponseUtils.createResponse("삭제완료"); 
+            boolean isDeleted = taskService.deleteTask(id);
+            if (isDeleted) {
+                return ApiResponseUtils.createResponse("작업 삭제 완료");
+            } else {
+                return ApiResponseUtils.createErrorResponse("작업 삭제 실패 (존재하지 않는 작업)");
+            }
         } catch (Exception e) {
-            return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage()); 
+            return ApiResponseUtils.createErrorResponse("오류 - " + e.getMessage());
         }
     }
 
