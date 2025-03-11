@@ -31,14 +31,14 @@
     CREATE DATABASE travelapp CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 2. DB 사용자 계정 생성 및 권한 부여
     ```sh
-    CREATE USER 'traveluser'@'localhost' IDENTIFIED BY 'qhdkscjfwj1!';
+    CREATE USER 'traveluser'@'localhost' IDENTIFIED BY 'travel_user';
     GRANT ALL PRIVILEGES ON travelapp.* TO 'traveluser'@'localhost';
     FLUSH PRIVILEGES;
 3. Spring Boot의 application-local.db.properties에 DB 정보 추가
     ```sh
     spring.datasource.url=jdbc:mysql://localhost:3306/travelapp?serverTimezone=UTC
     spring.datasource.username=traveluser
-    spring.datasource.password=qhdkscjfwj1!
+    spring.datasource.password=travel_user
     spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 
     spring.sql.init.mode=always
