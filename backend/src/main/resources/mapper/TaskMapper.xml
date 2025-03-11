@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaity.travel.backend.domain.todo.mapper.TaskMapper">
+
+    <select id="getAllTasks" resultType="com.kaity.travel.backend.domain.todo.entity.Task">
+        SELECT   id
+                ,title
+                ,description
+                ,dueDate
+                ,status
+                ,priority
+                ,createdAt
+        FROM task
+        ORDER BY dueDate ASC
+    </select>
+
+    <select id="getTaskById" parameterType="long" resultType="com.kaity.travel.backend.domain.todo.entity.Task">
+        SELECT   id
+                ,title
+                ,description
+                ,dueDate
+                ,status
+                ,priority
+                ,createdAt 
+        FROM task
+        WHERE id = #{id}
+    </select>
+
+    <insert id="createTask" parameterType="com.kaity.travel.backend.domain.todo.entity.Task" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO task (
+             title
+            ,description
+            ,dueDate
+            ,status
+            ,priority
+        )
+        VALUES (
+            #{title}
+            ,#{description}
+            ,#{dueDate}
+            ,#{status}
+            ,#{priority}
+        )
+    </insert>
+
+    <update id="updateTask" parameterType="com.kaity.travel.backend.domain.todo.entity.Task">
+        UPDATE task 
+        <set>
+            <if test="title != null">title = #{title},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="dueDate != null">dueDate = #{dueDate},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="priority != null">priority = #{priority}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteTask" parameterType="long">
+        DELETE FROM task WHERE id = #{id}
+    </delete>
+
+</mapper>

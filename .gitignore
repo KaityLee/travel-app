@@ -1,0 +1,16 @@
+# Backend files
+backend/target/
+backend/.gradle/
+backend/.idea/
+backend/.classpath
+backend/.project
+backend/.settings
+
+# Frontend files
+frontend/node_modules/
+frontend/build/
+
+# System files
+*.log
+.DS_Store
+.env

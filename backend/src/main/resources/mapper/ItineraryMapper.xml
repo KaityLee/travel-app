@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaity.travel.backend.domain.todo.mapper.ItineraryMapper">
+
+    <select id="getItineraryByTrip" parameterType="long" resultType="com.kaity.travel.backend.domain.todo.entity.Itinerary">
+        SELECT   id
+                ,tripId
+                ,dayNumber
+                ,title
+                ,description
+                ,timeSlot
+                ,location
+                ,address
+                ,latitude
+                ,longitude
+                ,createdAt 
+        FROM itinerary
+        WHERE tripId = #{tripId}
+        ORDER BY dayNumber ASC
+    </select>
+
+    <select id="getItineraryById" parameterType="long" resultType="com.kaity.travel.backend.domain.todo.entity.Itinerary">
+        SELECT   id
+                ,tripId
+                ,dayNumber
+                ,title
+                ,description
+                ,timeSlot
+                ,location
+                ,address
+                ,latitude
+                ,longitude
+                ,createdAt 
+        FROM itinerary
+        WHERE id = #{id}
+    </select>
+
+    <insert id="createItinerary" parameterType="com.kaity.travel.backend.domain.todo.entity.Itinerary" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO itinerary (
+             tripId
+            ,dayNumber
+            ,title
+            ,description
+            ,timeSlot
+            ,location
+            ,address
+            ,latitude
+            ,longitude
+        )
+        VALUES (
+             #{tripId}
+            ,#{dayNumber}
+            ,#{title}
+            ,#{description}
+            ,#{timeSlot}
+            ,#{location}
+            ,#{address}
+            ,#{latitude}
+            ,#{longitude}
+        )
+    </insert>
+
+    <update id="updateItinerary" parameterType="com.kaity.travel.backend.domain.todo.entity.Itinerary">
+        UPDATE itinerary 
+        <set>
+            <if test="dayNumber != null">   dayNumber   =    #{dayNumber}</if>
+            <if test="title != null">       ,title       =    #{title}</if>
+            <if test="description != null">,description =    #{description}</if>
+            <if test="timeSlot != null">    ,timeSlot    =    #{timeSlot}</if>
+            <if test="location != null">    ,location    =    #{location}</if>
+            <if test="address != null">     ,address     =    #{address}</if>
+            <if test="latitude != null">    ,latitude    =    #{latitude}</if>
+            <if test="longitude != null">   ,longitude   =    #{longitude}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteItinerary" parameterType="long">
+        DELETE FROM itinerary WHERE id = #{id}
+    </delete>
+
+</mapper>

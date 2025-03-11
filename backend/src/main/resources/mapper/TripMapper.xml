@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaity.travel.backend.domain.todo.mapper.TripMapper">
+
+    <select id="getAllTrips" resultType="com.kaity.travel.backend.domain.todo.entity.Trip">
+        SELECT   id
+                ,tripName
+                ,destination
+                ,startDate
+                ,endDate
+                ,notes
+                ,createdAt
+        FROM trip
+        ORDER BY startDate ASC
+    </select>
+
+    <select id="getTripById" parameterType="long" resultType="com.kaity.travel.backend.domain.todo.entity.Trip">
+        SELECT   id
+                ,tripName
+                ,destination
+                ,startDate
+                ,endDate
+                ,notes
+                ,createdAt 
+        FROM trip
+        WHERE id = #{id}
+    </select>
+
+    <insert id="createTrip" parameterType="com.kaity.travel.backend.domain.todo.entity.Trip" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO trip (
+             tripName
+            ,destination
+            ,startDate
+            ,endDate
+            ,notes
+        )
+        VALUES (
+             #{tripName}
+            ,#{destination}
+            ,#{startDate}
+            ,#{endDate}
+            ,#{notes}
+        )
+    </insert>
+
+    <update id="updateTrip" parameterType="com.kaity.travel.backend.domain.todo.entity.Trip">
+        UPDATE trip 
+        <set>
+            <if test="tripName != null">    tripName        =    #{tripName}</if>
+            <if test="destination != null"> ,destination =    #{destination}</if>
+            <if test="startDate != null">   ,startDate     =    #{startDate}</if>
+            <if test="endDate != null">     ,endDate         =    #{endDate}</if>
+            <if test="notes != null">       ,notes             =    #{notes}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteTrip" parameterType="long">
+        DELETE FROM trip WHERE id = #{id}
+    </delete>
+
+</mapper>
